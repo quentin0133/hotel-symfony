@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Hôtels{% endblock %}
+
+{% block body %}
+    <h1>Gestion des Hôtels</h1>
+
+    <a class="btn btn-primary my-2" href="{{ path('hotel.new') }}">Ajouter un hôtel</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code Hôtel</th>
+                <th>Nom Hôtel</th>
+                <th>Adresse Hôtel</th>
+                <th>Categorie Hôtel</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for hotel in hotels %}
+            <tr>
+                <td>{{ hotel.id }}</td>
+                <td>{{ hotel.codeHotel }}</td>
+                <td>{{ hotel.nomHotel }}</td>
+                <td>{{ hotel.adresseHotel }}</td>
+                <td>{{ hotel.categorieHotel }}</td>
+                <td>
+                    <div class="d-flex gap-1">
+                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('hotel.show', {'id': hotel.id}) }}">{{ ux_icon('bi:eye-fill') }}</a>
+                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('hotel.edit', {'id': hotel.id}) }}">{{ ux_icon('bi:pencil-fill') }}</a>
+                        {% include 'hotel/_delete_form.html.twig' %}
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Aucun hôtel trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

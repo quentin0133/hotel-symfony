@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un Hôtel{% endblock %}
+
+{% block body %}
+    <h1>Modifier un Hôtel</h1>
+
+    {{ include('hotel/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+    <a class="btn btn-secondary mt-2" href="{{ path('hotel.index') }}">Retourner à la liste</a>
+{% endblock %}

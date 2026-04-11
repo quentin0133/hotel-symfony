@@ -31,7 +31,7 @@ class Hotel
      * @var Collection<int, Chambre>
      */
     #[ORM\OneToMany(targetEntity: Chambre::class, mappedBy: 'hotel', orphanRemoval: true)]
-    private Collection $Chambre;
+    private Collection $chambre;
 
     /**
      * @var Collection<int, Reservation>
@@ -41,7 +41,7 @@ class Hotel
 
     public function __construct()
     {
-        $this->Chambre = new ArrayCollection();
+        $this->chambre = new ArrayCollection();
         $this->reservations = new ArrayCollection();
     }
 
@@ -103,13 +103,13 @@ class Hotel
      */
     public function getChambre(): Collection
     {
-        return $this->Chambre;
+        return $this->chambre;
     }
 
     public function addChambre(Chambre $chambre): static
     {
-        if (!$this->Chambre->contains($chambre)) {
-            $this->Chambre->add($chambre);
+        if (!$this->chambre->contains($chambre)) {
+            $this->chambre->add($chambre);
             $chambre->setHotel($this);
         }
 
@@ -118,7 +118,7 @@ class Hotel
 
     public function removeChambre(Chambre $chambre): static
     {
-        if ($this->Chambre->removeElement($chambre)) {
+        if ($this->chambre->removeElement($chambre)) {
             // set the owning side to null (unless already changed)
             if ($chambre->getHotel() === $this) {
                 $chambre->setHotel(null);

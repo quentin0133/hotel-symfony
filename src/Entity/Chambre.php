@@ -2,9 +2,8 @@
 
 namespace App\Entity;
 
+use App\Enum\ChambreTypeEnum;
 use App\Repository\ChambreRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ChambreRepository::class)]
@@ -21,15 +20,15 @@ class Chambre
     #[ORM\Column(nullable: true)]
     private ?int $etage = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $type = null;
-
     #[ORM\Column]
     private ?int $nombreLit = null;
 
     #[ORM\ManyToOne(inversedBy: 'Chambre')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Hotel $hotel = null;
+
+    #[ORM\Column(nullable: true, enumType: ChambreTypeEnum::class)]
+    private ?ChambreTypeEnum $type = null;
 
     public function getId(): ?int
     {
@@ -60,18 +59,6 @@ class Chambre
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(?string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getNombreLit(): ?int
     {
         return $this->nombreLit;
@@ -92,6 +79,18 @@ class Chambre
     public function setHotel(?Hotel $hotel): static
     {
         $this->hotel = $hotel;
+
+        return $this;
+    }
+
+    public function getType(): ?ChambreTypeEnum
+    {
+        return $this->type;
+    }
+
+    public function setType(?ChambreTypeEnum $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chambre{% endblock %}
+
+{% block body %}
+    <h1>Chambre</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ chambre.id }}</td>
+            </tr>
+            <tr>
+                <th>CodeChambre</th>
+                <td>{{ chambre.codeChambre }}</td>
+            </tr>
+            <tr>
+                <th>Etage</th>
+                <td>{{ chambre.etage }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ chambre.type.value }}</td>
+            </tr>
+            <tr>
+                <th>NombreLit</th>
+                <td>{{ chambre.nombreLit }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-secondary" href="{{ path('chambre.index') }}">Retourner à la liste</a>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Client{% endblock %}
+
+{% block body %}
+    <h1>Client</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ client.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ client.email }}</td>
+            </tr>
+            <tr>
+                <th>Rôles</th>
+                <td>{{ client.roles ? client.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Code Client</th>
+                <td>{{ client.codeClient }}</td>
+            </tr>
+            <tr>
+                <th>Nom Client</th>
+                <td>{{ client.nomClient }}</td>
+            </tr>
+            <tr>
+                <th>Adresse Client</th>
+                <td>{{ client.adrClient }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-secondary" href="{{ path('client.index') }}">Retourner à la liste</a>
+{% endblock %}
