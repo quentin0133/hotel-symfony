@@ -1,0 +1,88 @@
+# Projet d'expertise évalué : « Projet PHP »
+
+## Système de réservation hôtelière (CRUD MVC)
+
+**Description :** Application web de type CRUD développée avec le framework Symfony. Il s'agit du système de réservation d'un groupe hôtelier disposant d'une centrale de réservation nationale.
+
+**Équipe :**
+* Quentin YAHIA - quentin.yahia.pro@gmail.com
+* Hippolyte GAUTHERON - hippolyte.gauth@gmail.com
+
+---
+
+## Technologies utilisées
+
+* **Back-end :** PHP 8.x, Framework Symfony
+* **Front-end :** Twig, HTML5, CSS3, Bootstrap (Responsive Design)
+* **Base de données :** MariaDB (SQL)
+* **ORM :** Doctrine
+
+---
+
+## Fonctionnalités de l'application
+
+Le site est divisé en trois espaces distincts avec des niveaux d'accès spécifiques :
+
+### Espace Public
+* **Accueil :** Moteur de recherche de chambres disponibles selon une date de début et une date de fin.
+* **Réservation :** Possibilité de réserver une ou plusieurs chambres (sans module de paiement).
+* **Authentification :** * Inscription et connexion requises pour finaliser une réservation.
+    * *Note : Collecte de l'email et du numéro de téléphone lors de l'inscription en plus des données de base du MCD.*
+    * Gestion des mots de passe oubliés.
+
+### Espace Client (Connecté)
+* **Tableau de bord :** Visualisation de l'historique et des réservations en cours.
+* **Gestion des réservations :** Ajout de commentaires à une réservation existante (ex : demandes spéciales, ajout d’un lit bébé...).
+
+### Espace Administrateur (Gestionnaire)
+* **Gestion des Chambres (CRUD) :** Création, lecture, modification et suppression avec système de pagination et barre de recherche.
+* **Gestion des Réservations (CRUD) :** * Pagination et recherche via le `numReservation`.
+    * Vue détaillée d'une réservation affichant l'ensemble des chambres associées.
+* **Gestion des Clients (CRUD) :** Pagination et recherche via nom ou email.
+
+---
+
+## 🚀 Installation et déploiement (Local)
+
+### Prérequis
+* PHP >= 8.1
+* Composer
+* Symfony CLI
+* MariaDB
+
+### Étapes d'installation
+
+1. **Cloner le dépôt :**
+   ```bash
+   git clone [URL_DU_DEPOT]
+   cd [NOM_DU_DOSSIER]
+   ```
+
+2. **Installer les dépendances PHP :**
+   ```bash
+   composer install
+   ```
+
+3. **Configuration de la base de données :**
+
+Dupliquez le fichier `.env` en `.env.local` et configurez votre chaîne de connexion MariaDB :
+   ```env
+   DATABASE_URL="mysql://utilisateur:mot_de_passe@127.0.0.1:3306/nom_de_la_base?serverVersion=mariadb-10.x.x"
+   ```
+
+4. **Créer la base de données et appliquer les migrations :**
+   ```bash
+   php bin/console doctrine:database:create
+   php bin/console doctrine:migrations:migrate
+   ```
+
+5. **(Optionnel) Charger les données de test (Fixtures) :**
+   ```bash
+   php bin/console doctrine:fixtures:load
+   ```
+
+6. **Lancer le serveur de développement :**
+   ```bash
+   symfony serve -d
+   ```
+   *Accédez à l'application via `http://localhost:8000`.*
