@@ -3,6 +3,13 @@ namespace App\Enum;
 
 enum ChambreTypeEnum: string
 {
-    case SINGLE = 'Simple';
-    case DOUBLE = 'Double';
+    case SIMPLE = 'Simple';
+    case DOUBLE = 'Double Standard';
+    case TWIN = 'Twin';
+    case TRIPLE = 'Triple';
+    case JUNIOR_SUITE = 'Suite Junior';
+    case FAMILY_SUITE = 'Suite Familiale';
+    case PRESIDENTIAL_SUITE = "Suite Présidentielle";
+    case DORMITORY = "Dortoir";
+    case STUDIO = "Studio";
 }
