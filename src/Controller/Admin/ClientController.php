@@ -11,18 +11,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/admin/client')]
+#[Route('/admin/client', name: 'admin.client.')]
 final class ClientController extends AbstractController
 {
-    #[Route(name: 'client.index', methods: ['GET'])]
+    #[Route(name: 'index', methods: ['GET'])]
     public function index(ClientRepository $clientRepository): Response
     {
-        return $this->render('client/index.html.twig', [
+        return $this->render('admin/client/index.html.twig', [
             'clients' => $clientRepository->findAll(),
         ]);
     }
 
-    #[Route('/new', name: 'client.new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $client = new Client();
@@ -33,24 +33,24 @@ final class ClientController extends AbstractController
             $entityManager->persist($client);
             $entityManager->flush();
 
-            return $this->redirectToRoute('client.index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin.client.index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('client/new.html.twig', [
+        return $this->render('admin/client/new.html.twig', [
             'client' => $client,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'client.show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Client $client): Response
     {
-        return $this->render('client/show.html.twig', [
+        return $this->render('admin/client/show.html.twig', [
             'client' => $client,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'client.edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Client $client, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ClientType::class, $client);
@@ -59,16 +59,16 @@ final class ClientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('client.index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin.client.index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('client/edit.html.twig', [
+        return $this->render('admin/client/edit.html.twig', [
             'client' => $client,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'client.delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->getPayload()->getString('_token'))) {
@@ -76,6 +76,6 @@ final class ClientController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('client.index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin.client.index', [], Response::HTTP_SEE_OTHER);
     }
 }

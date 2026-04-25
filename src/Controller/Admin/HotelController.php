@@ -11,18 +11,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/admin/hotel')]
+#[Route('/admin/hotel', name: 'admin.hotel.')]
 final class HotelController extends AbstractController
 {
-    #[Route(name: 'hotel.index', methods: ['GET'])]
+    #[Route(name: 'index', methods: ['GET'])]
     public function index(HotelRepository $hotelRepository): Response
     {
-        return $this->render('hotel/index.html.twig', [
+        return $this->render('admin/hotel/index.html.twig', [
             'hotels' => $hotelRepository->findAll(),
         ]);
     }
 
-    #[Route('/new', name: 'hotel.new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $hotel = new Hotel();
@@ -33,24 +33,24 @@ final class HotelController extends AbstractController
             $entityManager->persist($hotel);
             $entityManager->flush();
 
-            return $this->redirectToRoute('hotel.index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin.hotel.index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('hotel/new.html.twig', [
+        return $this->render('admin/hotel/new.html.twig', [
             'hotel' => $hotel,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'hotel.show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Hotel $hotel): Response
     {
-        return $this->render('hotel/show.html.twig', [
+        return $this->render('admin/hotel/show.html.twig', [
             'hotel' => $hotel,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'hotel.edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Hotel $hotel, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(HotelType::class, $hotel);
@@ -59,16 +59,16 @@ final class HotelController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('hotel.index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin.hotel.index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('hotel/edit.html.twig', [
+        return $this->render('admin/hotel/edit.html.twig', [
             'hotel' => $hotel,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'hotel.delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Hotel $hotel, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$hotel->getId(), $request->getPayload()->getString('_token'))) {
@@ -76,6 +76,6 @@ final class HotelController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('hotel.index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin.hotel.index', [], Response::HTTP_SEE_OTHER);
     }
 }

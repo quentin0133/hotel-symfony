@@ -7,18 +7,18 @@
         {% if app.user %}
             {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item">
-                    <a class="nav-link {{ app.current_route starts with 'hotel.' ? 'active' : '' }}" href="{{ path('hotel.index') }}">Hôtel</a>
+                    <a class="nav-link {{ app.current_route starts with 'hotel.' ? 'active' : '' }}" href="{{ path('admin.hotel.index') }}">Hôtel</a>
                 </li>
             {% endif %}
             <li class="nav-item">
-                <a class="nav-link {{ app.current_route starts with 'reservation.' ? 'active' : '' }}" href="{{ is_granted('ROLE_ADMIN') ? path('reservation.index') : path('reservation.client') }}">Réservation</a>
+                <a class="nav-link {{ app.current_route starts with 'reservation.' ? 'active' : '' }}" href="{{ is_granted('ROLE_ADMIN') ? path('admin.reservation.index') : path('client.reservation.index') }}">Réservation</a>
             </li>
             {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item">
-                    <a class="nav-link {{ app.current_route starts with 'chambre.' ? 'active' : '' }}" href="{{ path('chambre.index') }}">Chambre</a>
+                    <a class="nav-link {{ app.current_route starts with 'chambre.' ? 'active' : '' }}" href="{{ path('admin.chambre.index') }}">Chambre</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ app.current_route starts with 'client.' ? 'active' : '' }}" href="{{ path('client.index') }}">Client</a>
+                    <a class="nav-link {{ app.current_route starts with 'client.' ? 'active' : '' }}" href="{{ path('admin.client.index') }}">Client</a>
                 </li>
             {% endif %}
         {% endif %}

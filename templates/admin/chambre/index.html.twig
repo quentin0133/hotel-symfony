@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Gestion des Chambres</h1>
 
-    <a class="btn btn-primary my-2" href="{{ path('chambre.new') }}">Ajouter une Chambre</a>
+    <a class="btn btn-primary my-2" href="{{ path('admin.chambre.new') }}">Ajouter une Chambre</a>
 
     <table class="table">
         <thead>
@@ -28,9 +28,9 @@
                 <td>{{ chambre.nombreLit }}</td>
                 <td>
                     <div class="d-flex gap-1">
-                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('chambre.show', {'id': chambre.id}) }}">{{ ux_icon('bi:eye-fill') }}</a>
-                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('chambre.edit', {'id': chambre.id}) }}">{{ ux_icon('bi:pencil-fill') }}</a>
-                        {% include 'chambre/_delete_form.html.twig' %}
+                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('admin.chambre.show', {'id': chambre.id}) }}">{{ ux_icon('bi:eye-fill') }}</a>
+                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('admin.chambre.edit', {'id': chambre.id}) }}">{{ ux_icon('bi:pencil-fill') }}</a>
+                        {% include 'admin/chambre/_delete_form.html.twig' %}
                     </div>
                 </td>
             </tr>

@@ -32,7 +32,7 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
             ;
 
 
-            foreach ($faker->randomElements($hotel->getChambre()) as $chambre) {
+            foreach ($faker->randomElements($hotel->getChambres()) as $chambre) {
                 $reservation->addChambre($chambre);
             }
 

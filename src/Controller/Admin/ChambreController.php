@@ -11,18 +11,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/chambre')]
+#[Route('/chambre', name: 'admin.chambre.')]
 final class ChambreController extends AbstractController
 {
-    #[Route(name: 'chambre.index', methods: ['GET'])]
+    #[Route(name: 'index', methods: ['GET'])]
     public function index(ChambreRepository $chambreRepository): Response
     {
-        return $this->render('chambre/index.html.twig', [
+        return $this->render('admin/chambre/index.html.twig', [
             'chambres' => $chambreRepository->findAll(),
         ]);
     }
 
-    #[Route('/new', name: 'chambre.new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $chambre = new Chambre();
@@ -33,24 +33,24 @@ final class ChambreController extends AbstractController
             $entityManager->persist($chambre);
             $entityManager->flush();
 
-            return $this->redirectToRoute('chambre.index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin.chambre.index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('chambre/new.html.twig', [
+        return $this->render('admin/chambre/new.html.twig', [
             'chambre' => $chambre,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'chambre.show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Chambre $chambre): Response
     {
-        return $this->render('chambre/show.html.twig', [
+        return $this->render('admin/chambre/show.html.twig', [
             'chambre' => $chambre,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'chambre.edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Chambre $chambre, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ChambreType::class, $chambre);
@@ -59,16 +59,16 @@ final class ChambreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('chambre.index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin.chambre.index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('chambre/edit.html.twig', [
+        return $this->render('admin/chambre/edit.html.twig', [
             'chambre' => $chambre,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'chambre.delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Chambre $chambre, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$chambre->getId(), $request->getPayload()->getString('_token'))) {
@@ -76,6 +76,6 @@ final class ChambreController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('chambre.index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin.chambre.index', [], Response::HTTP_SEE_OTHER);
     }
 }

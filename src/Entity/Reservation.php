@@ -54,7 +54,7 @@ class Reservation
         return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTime $dateDebut): static
+    public function setDateDebut(?\DateTime $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
 
@@ -66,7 +66,7 @@ class Reservation
         return $this->dateFin;
     }
 
-    public function setDateFin(\DateTime $dateFin): static
+    public function setDateFin(?\DateTime $dateFin): static
     {
         $this->dateFin = $dateFin;
 

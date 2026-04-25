@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Gestion des Hôtels</h1>
 
-    <a class="btn btn-primary my-2" href="{{ path('hotel.new') }}">Ajouter un hôtel</a>
+    <a class="btn btn-primary my-2" href="{{ path('admin.hotel.new') }}">Ajouter un hôtel</a>
 
     <table class="table">
         <thead>
@@ -28,9 +28,9 @@
                 <td>{{ hotel.categorieHotel }}</td>
                 <td>
                     <div class="d-flex gap-1">
-                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('hotel.show', {'id': hotel.id}) }}">{{ ux_icon('bi:eye-fill') }}</a>
-                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('hotel.edit', {'id': hotel.id}) }}">{{ ux_icon('bi:pencil-fill') }}</a>
-                        {% include 'hotel/_delete_form.html.twig' %}
+                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('admin.hotel.show', {'id': hotel.id}) }}">{{ ux_icon('bi:eye-fill') }}</a>
+                        <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('admin.hotel.edit', {'id': hotel.id}) }}">{{ ux_icon('bi:pencil-fill') }}</a>
+                        {% include 'admin/hotel/_delete_form.html.twig' %}
                     </div>
                 </td>
             </tr>
