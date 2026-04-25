@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Reservation;
 use App\Form\AdminReservationType;
-use App\Form\ClientReservationType;
 use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
