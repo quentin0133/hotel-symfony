@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Client;
 use App\Form\ClientType;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/client')]
+#[Route('/admin/client')]
 final class ClientController extends AbstractController
 {
     #[Route(name: 'client.index', methods: ['GET'])]

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Hotel;
 use App\Form\HotelType;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/hotel')]
+#[Route('/admin/hotel')]
 final class HotelController extends AbstractController
 {
     #[Route(name: 'hotel.index', methods: ['GET'])]

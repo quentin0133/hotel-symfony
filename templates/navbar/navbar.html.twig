@@ -1,24 +1,43 @@
 <div class="bg-white border-bottom d-flex align-items-center">
     <a class="navbar-brand fs-3 py-2 px-3" href="{{ path('home.index') }}">Hôtel</a>
-    <ul class="nav ms-auto">
+    <ul class="nav">
         <li class="nav-item">
             <a class="nav-link {{ app.current_route starts with 'home.' ? 'active' : '' }}" href="{{ path('home.index') }}">Accueil</a>
         </li>
-        <!-- TODO : hide only for admin -->
-        <li class="nav-item">
-            <a class="nav-link {{ app.current_route starts with 'hotel.' ? 'active' : '' }}" href="{{ path('hotel.index') }}">Hôtel</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ app.current_route starts with 'reservation.' ? 'active' : '' }}" href="{{ path('reservation.index') }}">Réservation</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ app.current_route starts with 'chambre.' ? 'active' : '' }}" href="{{ path('chambre.index') }}">Chambre</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ app.current_route starts with 'client.' ? 'active' : '' }}" href="{{ path('client.index') }}">Client</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ app.current_route starts with 'home.' ? 'active' : '' }}" href="#">Se connecter</a>
-        </li>
+        {% if app.user %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link {{ app.current_route starts with 'hotel.' ? 'active' : '' }}" href="{{ path('hotel.index') }}">Hôtel</a>
+                </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link {{ app.current_route starts with 'reservation.' ? 'active' : '' }}" href="{{ is_granted('ROLE_ADMIN') ? path('reservation.index') : path('reservation.client') }}">Réservation</a>
+            </li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link {{ app.current_route starts with 'chambre.' ? 'active' : '' }}" href="{{ path('chambre.index') }}">Chambre</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ app.current_route starts with 'client.' ? 'active' : '' }}" href="{{ path('client.index') }}">Client</a>
+                </li>
+            {% endif %}
+        {% endif %}
+    </ul>
+    <ul class="nav ms-auto">
+        {% if not app.user %}
+            <li class="nav-item">
+                <a class="nav-link {{ app.current_route starts with 'home.' ? 'active' : '' }}" href="{{ path('security.login') }}">Se connecter</a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <p class="navbar-text m-0">Bonjour {{ app.user.getNomClient() }} !</p>
+            </li>
+            <li class="nav-item">
+                <form action="/logout" method="post">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit" class="btn btn-link nav-link" style="background: none;">Déconnexion</button>
+                </form>
+            </li>
+        {% endif %}
     </ul>
 </div>
