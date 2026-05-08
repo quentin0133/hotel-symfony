@@ -62,7 +62,7 @@ final class ReservationController extends AbstractController
             return $this->redirectToRoute('admin.reservation.index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('reservation/edit.html.twig', [
+        return $this->render('admin/reservation/edit.html.twig', [
             'reservation' => $reservation,
             'form' => $form,
         ]);
