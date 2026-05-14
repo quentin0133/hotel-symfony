@@ -33,6 +33,16 @@ class ClientRepository extends ServiceEntityRepository implements PasswordUpgrad
         $this->getEntityManager()->flush();
     }
 
+    public function findOneByRole(string $role): ?Client
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.roles LIKE :role')
+            ->setParameter('role', '%"' . $role . '"%')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     //    /**
     //     * @return Client[] Returns an array of Client objects
     //     */
