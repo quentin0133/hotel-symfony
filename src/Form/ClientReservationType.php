@@ -39,7 +39,8 @@ class ClientReservationType extends AbstractType
                 'class' => Chambre::class,
                 'choice_label' => 'codeChambre',
                 'multiple' => true,
-                'expanded' => true
+                'expanded' => true,
+                'by_reference' => false
             ])
         ;
     }

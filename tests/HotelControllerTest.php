@@ -41,6 +41,7 @@ class HotelControllerTest extends WebTestCase
         $userRepository = static::getContainer()->get(ClientRepository::class);
 
         $testAdminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $countBefore = $hotelRepository->count([]);
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/hotel/new');
@@ -64,7 +65,7 @@ class HotelControllerTest extends WebTestCase
 
         $this->assertResponseRedirects('/admin/hotel');
 
-        $hotelDb = $hotelRepository->findOneBy(['nomHotel' => $newHotel->getNomHotel()]);
+        $hotelDb = $hotelRepository->findOneBy([], ['id' => 'DESC']);;
         $this->assertNotNull($hotelDb, 'The hotel has not been created.');
         $this->assertEquals($newHotel->getCodeHotel(), $hotelDb->getCodeHotel());
         $this->assertEquals($newHotel->getNomHotel(), $hotelDb->getNomHotel());
@@ -75,6 +76,7 @@ class HotelControllerTest extends WebTestCase
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
+        $this->assertCount($countBefore + 1, $hotelRepository->findAll());
         $this->assertEquals('admin.hotel.index', $client->getRequest()->attributes->get('_route'));
     }
 
