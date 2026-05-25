@@ -14,8 +14,9 @@
                 <th>Email</th>
                 <th>Rôles</th>
                 <th>Code Client</th>
-                <th>Nom Client</th>
-                <th>Adresse Client</th>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Téléphone</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -28,6 +29,7 @@
                 <td>{{ client.codeClient }}</td>
                 <td>{{ client.nomClient }}</td>
                 <td>{{ client.adrClient }}</td>
+                <td>{{ client.telClient }}</td>
                 <td>
                     <div class="d-flex gap-1">
                         <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('admin.client.show', {'id': client.id}) }}">{{ ux_icon('bi:eye-fill') }}</a>

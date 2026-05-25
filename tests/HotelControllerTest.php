@@ -15,11 +15,11 @@ class HotelControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
         $hotel = $hotelRepository->findAll()[0];
 
-        $testAdminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/hotel');
@@ -38,9 +38,9 @@ class HotelControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $testAdminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $countBefore = $hotelRepository->count([]);
         $client->loginUser($testAdminUser);
 
@@ -85,12 +85,12 @@ class HotelControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
         $id = 1;
         $hotel = $hotelRepository->findOneBy(['id' => $id]);
 
-        $testAdminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/hotel/' . $id);
@@ -109,9 +109,9 @@ class HotelControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $testAdminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $id = 1;
@@ -155,9 +155,9 @@ class HotelControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $testAdminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $hotel = $hotelRepository->findOneBy([]);
@@ -185,9 +185,9 @@ class HotelControllerTest extends WebTestCase
     public function when_showingSpecificHotelNotOwnAsClient_shouldReturn_errorForbidden(): void
     {
         $client = static::createClient();
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $client->loginUser($userRepository->findOneByRole('ROLE_USER'));
+        $client->loginUser($clientHotelRespository->findOneByRole('ROLE_USER'));
 
         $client->request('GET', '/admin/hotel/1');
 

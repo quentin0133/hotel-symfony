@@ -27,6 +27,7 @@ class ClientType extends AbstractType
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
+                'mapped' => false
             ])
             ->add('codeClient', TextType::class)
             ->add('nomClient', TextType::class)

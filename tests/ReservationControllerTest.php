@@ -17,11 +17,11 @@ class ReservationControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $reservationRepository = static::getContainer()->get(ReservationRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
         $reservation = $reservationRepository->findAll()[0];
 
-        $adminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $adminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($adminUser);
 
         $client->request('GET', '/admin/reservation');
@@ -41,9 +41,9 @@ class ReservationControllerTest extends WebTestCase
         $reservationRepository = static::getContainer()->get(ReservationRepository::class);
         $chambreRepository = static::getContainer()->get(ChambreRepository::class);
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $adminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $adminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $countBefore = $reservationRepository->count([]);
         $client->loginUser($adminUser);
 
@@ -110,12 +110,12 @@ class ReservationControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $reservationRepository = static::getContainer()->get(ReservationRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
         $id = 1;
         $reservation = $reservationRepository->findOneBy(['id' => $id]);
 
-        $adminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $adminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($adminUser);
 
         $client->request('GET', '/admin/reservation/' . $id);
@@ -135,9 +135,9 @@ class ReservationControllerTest extends WebTestCase
         $reservationRepository = static::getContainer()->get(ReservationRepository::class);
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
         $chambreRepository = static::getContainer()->get(ChambreRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $adminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $adminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($adminUser);
 
         $id = 1;
@@ -202,9 +202,9 @@ class ReservationControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $reservationRepository = static::getContainer()->get(ReservationRepository::class);
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $adminUser = $userRepository->findOneByRole('ROLE_ADMIN');
+        $adminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($adminUser);
 
         $reservation = $reservationRepository->findOneBy([]);
@@ -232,9 +232,9 @@ class ReservationControllerTest extends WebTestCase
     public function when_showingSpecificReservationNotOwnAsClient_shouldReturn_errorForbidden(): void
     {
         $client = static::createClient();
-        $userRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $client->loginUser($userRepository->findOneByRole('ROLE_USER'));
+        $client->loginUser($clientHotelRespository->findOneByRole('ROLE_USER'));
 
         $client->request('GET', '/admin/reservation/1');
 
