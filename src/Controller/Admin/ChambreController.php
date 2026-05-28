@@ -6,6 +6,7 @@ use App\Entity\Chambre;
 use App\Form\ChambreType;
 use App\Repository\ChambreRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,10 +16,19 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ChambreController extends AbstractController
 {
     #[Route(name: 'index', methods: ['GET'])]
-    public function index(ChambreRepository $chambreRepository): Response
+    public function index(
+        Request $request,
+        ChambreRepository $chambreRepository,
+        PaginatorInterface $paginator
+    ): Response
     {
+        $query = $chambreRepository->createQueryBuilder('c')->getQuery();
+        $page = $request->query->getInt('page', 1);
+
+        $chambres = $paginator->paginate($query, $page, 10);
+
         return $this->render('admin/chambre/index.html.twig', [
-            'chambres' => $chambreRepository->findAll(),
+            'chambres' => $chambres,
         ]);
     }
 
