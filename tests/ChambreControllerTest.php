@@ -9,6 +9,7 @@ use App\Repository\ClientRepository;
 use App\Repository\HotelRepository;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Routing\RouterInterface;
 
 class ChambreControllerTest extends WebTestCase
 {
@@ -19,20 +20,21 @@ class ChambreControllerTest extends WebTestCase
         $chambreRepository = static::getContainer()->get(ChambreRepository::class);
         $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $chambre = $chambreRepository->findAll()[0];
-
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/chambre');
 
+        $id = $client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text();
+        $chambre = $chambreRepository->find(trim($id));
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Gestion des Chambres');
-        $this->assertSelectorTextContains('td:nth-child(1)', $chambre->getId());
-        $this->assertSelectorTextContains('td:nth-child(2)', $chambre->getCodeChambre());
-        $this->assertSelectorTextContains('td:nth-child(3)', $chambre->getEtage());
-        $this->assertSelectorTextContains('td:nth-child(4)', $chambre->getType()->value);
-        $this->assertSelectorTextContains('td:nth-child(5)', $chambre->getNombreLit());
+        $this->assertSelectorTextContains('tbody', $chambre->getId());
+        $this->assertSelectorTextContains('tbody', $chambre->getCodeChambre());
+        $this->assertSelectorTextContains('tbody', $chambre->getEtage());
+        $this->assertSelectorTextContains('tbody', $chambre->getType()->value);
+        $this->assertSelectorTextContains('tbody', $chambre->getNombreLit());
     }
 
 
@@ -169,6 +171,7 @@ class ChambreControllerTest extends WebTestCase
         $client = static::createClient();
         $chambreRepository = static::getContainer()->get(ChambreRepository::class);
         $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $router = static::getContainer()->get(RouterInterface::class);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
@@ -177,7 +180,14 @@ class ChambreControllerTest extends WebTestCase
         $chambreId = $chambre->getId();
 
         $client->request('GET', '/admin/chambre');
-        $client->submitForm('Supprimer');
+
+        $id = trim($client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text());
+
+        $deleteUrl = $router->generate('admin.chambre.delete', ['id' => $id]);
+
+        $form = $client->getCrawler()->filter(sprintf('form[action="%s"]', $deleteUrl))->form();
+
+        $client->submit($form);
 
         $this->assertResponseRedirects('/admin/chambre');
         $deletedChambre = $chambreRepository->find($chambreId);

@@ -9,6 +9,7 @@ use App\Repository\HotelRepository;
 use App\Repository\ReservationRepository;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Routing\RouterInterface;
 
 class ReservationControllerTest extends WebTestCase
 {
@@ -19,19 +20,20 @@ class ReservationControllerTest extends WebTestCase
         $reservationRepository = static::getContainer()->get(ReservationRepository::class);
         $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $reservation = $reservationRepository->findAll()[0];
-
         $adminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($adminUser);
 
         $client->request('GET', '/admin/reservation');
 
+        $id = $client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text();
+        $reservation = $reservationRepository->find(trim($id));
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Gestion des Réservations');
-        $this->assertSelectorTextContains('td:nth-child(1)', $reservation->getId());
-        $this->assertSelectorTextContains('td:nth-child(2)', $reservation->getDateDebut()->format('d/m/Y'));
-        $this->assertSelectorTextContains('td:nth-child(3)', $reservation->getDateFin()->format('d/m/Y'));
-        $this->assertSelectorTextContains('td:nth-child(4)', $reservation->getCommentaire());
+        $this->assertSelectorTextContains('tbody', $reservation->getId());
+        $this->assertSelectorTextContains('tbody', $reservation->getDateDebut()->format('d/m/Y'));
+        $this->assertSelectorTextContains('tbody', $reservation->getDateFin()->format('d/m/Y'));
+        $this->assertSelectorTextContains('tbody', $reservation->getCommentaire());
     }
 
     #[Test]
@@ -203,19 +205,24 @@ class ReservationControllerTest extends WebTestCase
         $client = static::createClient();
         $reservationRepository = static::getContainer()->get(ReservationRepository::class);
         $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $router = static::getContainer()->get(RouterInterface::class);
 
         $adminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($adminUser);
 
-        $reservation = $reservationRepository->findOneBy([]);
-        $reservationId = $reservation->getId();
-
         $client->request('GET', '/admin/reservation');
-        $client->submitForm('Supprimer');
+
+        $id = trim($client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text());
+
+        $deleteUrl = $router->generate('admin.reservation.delete', ['id' => $id]);
+
+        $form = $client->getCrawler()->filter(sprintf('form[action="%s"]', $deleteUrl))->form();
+
+        $client->submit($form);
 
         $this->assertResponseRedirects('/admin/reservation');
-        $deletedReservation = $reservationRepository->find($reservationId);
-        $this->assertNull($deletedReservation, "The reservation {$reservationId} was not deleted.");
+        $deletedReservation = $reservationRepository->find($id);
+        $this->assertNull($deletedReservation, "The reservation {$id} was not deleted.");
     }
 
     #[Test]

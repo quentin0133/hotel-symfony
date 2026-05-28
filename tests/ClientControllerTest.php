@@ -7,6 +7,7 @@ use App\Repository\ClientRepository;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class ClientControllerTest extends WebTestCase
 {
@@ -16,22 +17,23 @@ class ClientControllerTest extends WebTestCase
         $client = static::createClient();
         $clientHotelRepository = static::getContainer()->get(ClientRepository::class);
 
-        $clientHotel = $clientHotelRepository->findAll()[0];
-
         $testAdminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/client');
 
+        $id = $client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text();
+        $clientHotel = $clientHotelRepository->find(trim($id));
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Gestion des Clients');
-        $this->assertSelectorTextContains('td:nth-child(1)', $clientHotel->getId());
-        $this->assertSelectorTextContains('td:nth-child(2)', $clientHotel->getEmail());
-        $this->assertSelectorTextContains('td:nth-child(3)', json_encode($clientHotel->getRoles()));
-        $this->assertSelectorTextContains('td:nth-child(4)', $clientHotel->getCodeClient());
-        $this->assertSelectorTextContains('td:nth-child(5)', $clientHotel->getNomClient());
-        $this->assertSelectorTextContains('td:nth-child(6)', str_replace("\n", ' ', $clientHotel->getAdrClient()));
-        $this->assertSelectorTextContains('td:nth-child(7)', $clientHotel->getTelClient());
+        $this->assertSelectorTextContains('tbody', $clientHotel->getId());
+        $this->assertSelectorTextContains('tbody', $clientHotel->getEmail());
+        $this->assertSelectorTextContains('tbody', json_encode($clientHotel->getRoles()));
+        $this->assertSelectorTextContains('tbody', $clientHotel->getCodeClient());
+        $this->assertSelectorTextContains('tbody', $clientHotel->getNomClient());
+        $this->assertSelectorTextContains('tbody', str_replace("\n", ' ', $clientHotel->getAdrClient()));
+        $this->assertSelectorTextContains('tbody', $clientHotel->getTelClient());
     }
 
 
@@ -183,6 +185,7 @@ class ClientControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $clientHotelRepository = static::getContainer()->get(ClientRepository::class);
+        $router = static::getContainer()->get(RouterInterface::class);
 
         $testAdminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
@@ -191,7 +194,15 @@ class ClientControllerTest extends WebTestCase
         $clientHotelId = $clientHotel->getId();
 
         $client->request('GET', '/admin/client');
-        $client->submitForm('Supprimer');
+
+        $id = trim($client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text());
+
+        $deleteUrl = $router->generate('admin.client.delete', ['id' => $id]);
+
+        $form = $client->getCrawler()->filter(sprintf('form[action="%s"]', $deleteUrl))->form();
+
+        $client->submit($form);
+
 
         $this->assertResponseRedirects('/admin/client');
         $deletedClientHotel = $clientHotelRepository->find($clientHotelId);

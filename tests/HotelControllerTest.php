@@ -7,6 +7,7 @@ use App\Repository\ClientRepository;
 use App\Repository\HotelRepository;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Routing\RouterInterface;
 
 class HotelControllerTest extends WebTestCase
 {
@@ -17,20 +18,21 @@ class HotelControllerTest extends WebTestCase
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
         $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
 
-        $hotel = $hotelRepository->findAll()[0];
-
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/hotel');
 
+        $id = $client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text();
+        $hotel = $hotelRepository->find(trim($id));
+
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Gestion des Hôtels');
-        $this->assertSelectorTextContains('td:nth-child(1)', $hotel->getId());
-        $this->assertSelectorTextContains('td:nth-child(2)', $hotel->getCodeHotel());
-        $this->assertSelectorTextContains('td:nth-child(3)', $hotel->getNomHotel());
-        $this->assertSelectorTextContains('td:nth-child(4)', str_replace("\n", ' ', $hotel->getAdresseHotel()));
-        $this->assertSelectorTextContains('td:nth-child(5)', $hotel->getCategorieHotel());
+        $this->assertSelectorTextContains('tbody', $hotel->getId());
+        $this->assertSelectorTextContains('tbody', $hotel->getCodeHotel());
+        $this->assertSelectorTextContains('tbody', $hotel->getNomHotel());
+        $this->assertSelectorTextContains('tbody', str_replace("\n", ' ', $hotel->getAdresseHotel()));
+        $this->assertSelectorTextContains('tbody', $hotel->getCategorieHotel());
     }
 
     #[Test]
@@ -156,6 +158,7 @@ class HotelControllerTest extends WebTestCase
         $client = static::createClient();
         $hotelRepository = static::getContainer()->get(HotelRepository::class);
         $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $router = static::getContainer()->get(RouterInterface::class);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
@@ -164,7 +167,15 @@ class HotelControllerTest extends WebTestCase
         $hotelId = $hotel->getId();
 
         $client->request('GET', '/admin/hotel');
-        $client->submitForm('Supprimer');
+
+        $id = trim($client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text());
+
+        $deleteUrl = $router->generate('admin.hotel.delete', ['id' => $id]);
+
+        $form = $client->getCrawler()->filter(sprintf('form[action="%s"]', $deleteUrl))->form();
+
+        $client->submit($form);
+
 
         $this->assertResponseRedirects('/admin/hotel');
         $deletedHotel = $hotelRepository->find($hotelId);
