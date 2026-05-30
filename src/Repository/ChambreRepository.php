@@ -20,6 +20,7 @@ class ChambreRepository extends ServiceEntityRepository
 
     public function findByCodeChambreLikePaginated(string $codeChambre, int $page, int $limit = 10): PaginationInterface
     {
+        $codeChambre = trim($codeChambre);
         $query = $this->createQueryBuilder('c');
         if (!empty($codeChambre)) {
             $query = $query
