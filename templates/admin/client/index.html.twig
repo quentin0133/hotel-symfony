@@ -7,6 +7,11 @@
 
     <a class="btn btn-primary my-2" href="{{ path('admin.client.new') }}">Ajouter un Client</a>
 
+    <form class="d-flex" method="get" action="{{ path('admin.client.index') }}">
+        <input class="form-control me-2" name="search" type="search" placeholder="Rechercher..." aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Rechercher</button>
+    </form>
+
     <table class="table">
         <thead>
             <tr>

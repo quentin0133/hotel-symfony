@@ -19,14 +19,13 @@ final class ClientController extends AbstractController
     #[Route(name: 'index', methods: ['GET'])]
     public function index(
         Request $request,
-        ClientRepository $clientRepository,
-        PaginatorInterface $paginator
+        ClientRepository $clientRepository
     ): Response
     {
-        $query = $clientRepository->createQueryBuilder('c')->getQuery();
         $page = $request->query->getInt('page', 1);
+        $search = $request->query->getString('search');
 
-        $clients = $paginator->paginate($query, $page, 10);
+        $clients = $clientRepository->findByNameOrEmailLikePaginated($search, $page);
 
         return $this->render('admin/client/index.html.twig', [
             'clients' => $clients,
