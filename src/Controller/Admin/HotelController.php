@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Hotel;
 use App\Form\HotelType;
-use App\Repository\ChambreRepository;
 use App\Repository\HotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;

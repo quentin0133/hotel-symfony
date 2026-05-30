@@ -2,38 +2,45 @@
 
 namespace App\Tests;
 
+use AllowDynamicProperties;
 use App\Entity\Client as ClientHotel;
 use App\Repository\ClientRepository;
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+#[AllowDynamicProperties]
 class ClientControllerTest extends WebTestCase
 {
     #[Test]
     public function when_listingClientHotelAsAdmin_shouldReturn_listAllClientHotel(): void
     {
         $client = static::createClient();
-        $clientHotelRepository = static::getContainer()->get(ClientRepository::class);
+        $this->clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
 
-        $testAdminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $this->clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/client');
 
         $id = $client->getCrawler()->filter('tbody tr:first-child td:nth-child(1)')->text();
-        $clientHotel = $clientHotelRepository->find(trim($id));
+        $this->clientHotel = $this->clientHotelRepository->find(trim($id));
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Gestion des Clients');
-        $this->assertSelectorTextContains('tbody', $clientHotel->getId());
-        $this->assertSelectorTextContains('tbody', $clientHotel->getEmail());
-        $this->assertSelectorTextContains('tbody', json_encode($clientHotel->getRoles()));
-        $this->assertSelectorTextContains('tbody', $clientHotel->getCodeClient());
-        $this->assertSelectorTextContains('tbody', $clientHotel->getNomClient());
-        $this->assertSelectorTextContains('tbody', str_replace("\n", ' ', $clientHotel->getAdrClient()));
-        $this->assertSelectorTextContains('tbody', $clientHotel->getTelClient());
+        $this->assertSelectorTextContains('tbody', $this->clientHotel->getId());
+        $this->assertSelectorTextContains('tbody', $this->clientHotel->getEmail());
+        $this->assertSelectorTextContains('tbody', json_encode($this->clientHotel->getRoles()));
+        $this->assertSelectorTextContains('tbody', $this->clientHotel->getCodeClient());
+        $this->assertSelectorTextContains('tbody', $this->clientHotel->getNomClient());
+        $this->assertSelectorTextContains('tbody', str_replace("\n", ' ', $this->clientHotel->getAdrClient()));
+        $this->assertSelectorTextContains('tbody', $this->clientHotel->getTelClient());
     }
 
 
@@ -41,11 +48,11 @@ class ClientControllerTest extends WebTestCase
     public function when_creatingNewClientHotelAsAdmin_shouldReturn_createNewClientHotel(): void
     {
         $client = static::createClient();
-        $clientHotelRepository = static::getContainer()->get(ClientRepository::class);
-        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
+        $this->clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
+        $hasher = $client->getContainer()->get(UserPasswordHasherInterface::class);
 
-        $testAdminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
-        $countBefore = $clientHotelRepository->count([]);
+        $testAdminUser = $this->clientHotelRepository->findOneByRole('ROLE_ADMIN');
+        $countBefore = $this->clientHotelRepository->count([]);
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/client/new');
@@ -57,7 +64,7 @@ class ClientControllerTest extends WebTestCase
             ->setEmail('michel@test.fr')
             ->setPassword('LeBgD!38')
             ->setNomClient('michel')
-            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
+            ->setRoles(['ROLE_CLIENT', 'ROLE_ADMIN'])
             ->setAdrClient('8 rue des Michels')
             ->setTelClient('06.02.03.04.05')
             ->setCodeClient('michel-5')
@@ -77,15 +84,15 @@ class ClientControllerTest extends WebTestCase
 
         $this->assertResponseRedirects('/admin/client');
 
-        $clientHotelDb = $clientHotelRepository->findOneBy([], ['id' => 'DESC']);;
-        $this->assertNotNull($clientHotelDb, 'The client has not been created.');
-        $this->assertEquals($newClientHotel->getEmail(), $clientHotelDb->getEmail());
-        $this->assertEqualsCanonicalizing($newClientHotel->getRoles(), $clientHotelDb->getRoles());
-        $this->assertEquals($newClientHotel->getCodeClient(), $clientHotelDb->getCodeClient());
-        $this->assertEquals($newClientHotel->getNomClient(), $clientHotelDb->getNomClient());
-        $this->assertEquals($newClientHotel->getAdrClient(), $clientHotelDb->getAdrClient());
+        $this->clientHotelDb = $this->clientHotelRepository->findOneBy([], ['id' => 'DESC']);;
+        $this->assertNotNull($this->clientHotelDb, 'The client has not been created.');
+        $this->assertEquals($newClientHotel->getEmail(), $this->clientHotelDb->getEmail());
+        $this->assertEqualsCanonicalizing($newClientHotel->getRoles(), $this->clientHotelDb->getRoles());
+        $this->assertEquals($newClientHotel->getCodeClient(), $this->clientHotelDb->getCodeClient());
+        $this->assertEquals($newClientHotel->getNomClient(), $this->clientHotelDb->getNomClient());
+        $this->assertEquals($newClientHotel->getAdrClient(), $this->clientHotelDb->getAdrClient());
         $this->assertTrue(
-            $hasher->isPasswordValid($clientHotelDb, $newClientHotel->getPassword()),
+            $hasher->isPasswordValid($this->clientHotelDb, $newClientHotel->getPassword()),
             'The password stored in the database does not match the expected hash'
         );
 
@@ -93,7 +100,7 @@ class ClientControllerTest extends WebTestCase
         $client->followRedirect();
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount($countBefore + 1, $clientHotelRepository->findAll());
+        $this->assertCount($countBefore + 1, $this->clientHotelRepository->findAll());
         $this->assertEquals('admin.client.index', $client->getRequest()->attributes->get('_route'));
     }
 
@@ -101,37 +108,39 @@ class ClientControllerTest extends WebTestCase
     public function when_showingSpecificClientHotelAsAdmin_shouldReturn_showClientHotel(): void
     {
         $client = static::createClient();
-        $clientHotelRepository = static::getContainer()->get(ClientRepository::class);
+        $this->clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
 
-        $id = 1;
-        $clientHotel = $clientHotelRepository->findOneBy(['id' => $id]);
+        $this->clientHotel = $this->clientHotelRepository->findOneBy([]);
+        $id = $this->clientHotel->getId();
+        $this->clientHotel = $this->clientHotelRepository->findOneBy(['id' => $id]);
 
-        $testAdminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $this->clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
         $client->request('GET', '/admin/client/' . $id);
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Client');
-        $this->assertSelectorTextContains('tbody tr:nth-child(1) td', $clientHotel->getId());
-        $this->assertSelectorTextContains('tbody tr:nth-child(2) td', $clientHotel->getEmail());
-        $this->assertSelectorTextContains('tbody tr:nth-child(3) td', json_encode($clientHotel->getRoles()));
-        $this->assertSelectorTextContains('tbody tr:nth-child(4) td', $clientHotel->getCodeClient());
-        $this->assertSelectorTextContains('tbody tr:nth-child(5) td', $clientHotel->getNomClient());
-        $this->assertSelectorTextContains('tbody tr:nth-child(6) td', str_replace("\n", ' ', $clientHotel->getAdrClient()));
+        $this->assertSelectorTextContains('tbody tr:nth-child(1) td', $this->clientHotel->getId());
+        $this->assertSelectorTextContains('tbody tr:nth-child(2) td', $this->clientHotel->getEmail());
+        $this->assertSelectorTextContains('tbody tr:nth-child(3) td', json_encode($this->clientHotel->getRoles()));
+        $this->assertSelectorTextContains('tbody tr:nth-child(4) td', $this->clientHotel->getCodeClient());
+        $this->assertSelectorTextContains('tbody tr:nth-child(5) td', $this->clientHotel->getNomClient());
+        $this->assertSelectorTextContains('tbody tr:nth-child(6) td', str_replace("\n", ' ', $this->clientHotel->getAdrClient()));
     }
 
     #[Test]
     public function when_editingSpecificClientHotelAsAdmin_shouldReturn_editClientHotel(): void
     {
         $client = static::createClient();
-        $clientHotelRepository = static::getContainer()->get(ClientRepository::class);
-        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
+        $this->clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
+        $hasher = $client->getContainer()->get(UserPasswordHasherInterface::class);
 
-        $testAdminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $this->clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
-        $id = 1;
+        $this->clientHotel = $this->clientHotelRepository->findOneBy([]);
+        $id = $this->clientHotel->getId();
         $client->request('GET', '/admin/client/' . $id . '/edit');
 
         $this->assertResponseIsSuccessful();
@@ -141,7 +150,7 @@ class ClientControllerTest extends WebTestCase
             ->setEmail('michel@test.fr')
             ->setPassword('LeBgD!38')
             ->setNomClient('michel')
-            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
+            ->setRoles(['ROLE_CLIENT', 'ROLE_ADMIN'])
             ->setAdrClient('8 rue des Michels')
             ->setTelClient('06.02.03.04.05')
             ->setCodeClient('michel-5')
@@ -161,15 +170,15 @@ class ClientControllerTest extends WebTestCase
 
         $this->assertResponseRedirects('/admin/client');
 
-        $clientHotelDb = $clientHotelRepository->findOneBy(['id' => $id]);
-        $this->assertNotNull($clientHotelDb, 'The client has not been created.');
-        $this->assertEquals($editedClientHotel->getEmail(), $clientHotelDb->getEmail());
-        $this->assertEqualsCanonicalizing($editedClientHotel->getRoles(), $clientHotelDb->getRoles());
-        $this->assertEquals($editedClientHotel->getCodeClient(), $clientHotelDb->getCodeClient());
-        $this->assertEquals($editedClientHotel->getNomClient(), $clientHotelDb->getNomClient());
-        $this->assertEquals($editedClientHotel->getAdrClient(), $clientHotelDb->getAdrClient());
+        $this->clientHotelDb = $this->clientHotelRepository->findOneBy(['id' => $id]);
+        $this->assertNotNull($this->clientHotelDb, 'The client has not been created.');
+        $this->assertEquals($editedClientHotel->getEmail(), $this->clientHotelDb->getEmail());
+        $this->assertEqualsCanonicalizing($editedClientHotel->getRoles(), $this->clientHotelDb->getRoles());
+        $this->assertEquals($editedClientHotel->getCodeClient(), $this->clientHotelDb->getCodeClient());
+        $this->assertEquals($editedClientHotel->getNomClient(), $this->clientHotelDb->getNomClient());
+        $this->assertEquals($editedClientHotel->getAdrClient(), $this->clientHotelDb->getAdrClient());
         $this->assertTrue(
-            $hasher->isPasswordValid($clientHotelDb, $editedClientHotel->getPassword()),
+            $hasher->isPasswordValid($this->clientHotelDb, $editedClientHotel->getPassword()),
             'The password stored in the database does not match the expected hash'
         );
 
@@ -184,14 +193,14 @@ class ClientControllerTest extends WebTestCase
     public function when_deletingSpecificClientHotelAsAdmin_shouldReturn_deleteClientHotel(): void
     {
         $client = static::createClient();
-        $clientHotelRepository = static::getContainer()->get(ClientRepository::class);
-        $router = static::getContainer()->get(RouterInterface::class);
+        $this->clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
+        $router = $client->getContainer()->get(RouterInterface::class);
 
-        $testAdminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $this->clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
-        $clientHotel = $clientHotelRepository->findOneBy([]);
-        $clientHotelId = $clientHotel->getId();
+        $this->clientHotel = $this->clientHotelRepository->findOneBy([]);
+        $this->clientHotelId = $this->clientHotel->getId();
 
         $client->request('GET', '/admin/client');
 
@@ -205,8 +214,8 @@ class ClientControllerTest extends WebTestCase
 
 
         $this->assertResponseRedirects('/admin/client');
-        $deletedClientHotel = $clientHotelRepository->find($clientHotelId);
-        $this->assertNull($deletedClientHotel, "The client {$clientHotelId} was not deleted.");
+        $deletedClientHotel = $this->clientHotelRepository->find($this->clientHotelId);
+        $this->assertNull($deletedClientHotel, "The client {$this->clientHotelId} was not deleted.");
     }
 
     #[Test]
@@ -223,9 +232,9 @@ class ClientControllerTest extends WebTestCase
     public function when_showingSpecificClientHotelNotOwnAsClient_shouldReturn_errorForbidden(): void
     {
         $client = static::createClient();
-        $clientHotelRepository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
 
-        $client->loginUser($clientHotelRepository->findOneByRole('ROLE_USER'));
+        $client->loginUser($clientHotelRepository->findOneByRole('ROLE_CLIENT'));
 
         $client->request('GET', '/admin/client/1');
 

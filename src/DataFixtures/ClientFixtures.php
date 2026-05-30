@@ -25,7 +25,7 @@ class ClientFixtures extends Fixture
         for ($i = 0; $i < self::NUMBER_FIXTURES; $i++) {
             $user = new Client();
             $user
-                ->setRoles([$i === 0 ? 'ROLE_ADMIN' : 'ROLE_USER'])
+                ->setRoles([$i === 0 ? 'ROLE_ADMIN' : 'ROLE_CLIENT'])
                 ->setNomClient($faker->name())
                 ->setAdrClient($faker->address())
                 ->setCodeClient($faker->slug())

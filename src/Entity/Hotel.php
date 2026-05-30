@@ -30,13 +30,13 @@ class Hotel
     /**
      * @var Collection<int, Chambre>
      */
-    #[ORM\OneToMany(targetEntity: Chambre::class, mappedBy: 'hotel', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Chambre::class, mappedBy: 'hotel', cascade: ['remove'], orphanRemoval: true)]
     private Collection $chambres;
 
     /**
      * @var Collection<int, Reservation>
      */
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'hotel', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'hotel', cascade: ['remove'], orphanRemoval: true)]
     private Collection $reservations;
 
     public function __construct()

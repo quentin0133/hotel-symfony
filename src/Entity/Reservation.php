@@ -39,6 +39,9 @@ class Reservation
     #[ORM\ManyToMany(targetEntity: Chambre::class, inversedBy: 'reservations')]
     private Collection $chambres;
 
+    #[ORM\Column(length: 255)]
+    private ?string $numReservation = null;
+
     public function __construct()
     {
         $this->chambres = new ArrayCollection();
@@ -129,6 +132,18 @@ class Reservation
     public function removeChambre(Chambre $chambre): static
     {
         $this->chambres->removeElement($chambre);
+
+        return $this;
+    }
+
+    public function getNumReservation(): ?string
+    {
+        return $this->numReservation;
+    }
+
+    public function setNumReservation(string $numReservation): static
+    {
+        $this->numReservation = $numReservation;
 
         return $this;
     }

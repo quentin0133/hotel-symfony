@@ -24,6 +24,7 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
             $client = $this->getReference('client_' . $faker->numberBetween(0, ClientFixtures::NUMBER_FIXTURES - 1), Client::class);
             $dateDebut = $faker->dateTimeBetween('now', '+1 month');
             $reservation = new Reservation()
+                ->setNumReservation($faker->slug())
                 ->setDateDebut($dateDebut)
                 ->setDateFin($faker->dateTimeInInterval($dateDebut->add(new DateInterval('P3D')), '+2 weeks'))
                 ->setCommentaire($faker->realText())

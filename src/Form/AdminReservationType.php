@@ -18,6 +18,7 @@ class AdminReservationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('numReservation', TextType::class)
             ->add('dateDebut', DateType::class)
             ->add('dateFin', DateType::class)
             ->add('commentaire', TextType::class, [

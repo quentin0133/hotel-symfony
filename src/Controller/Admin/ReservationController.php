@@ -17,18 +17,17 @@ final class ReservationController extends AbstractController
 {
     #[Route(name: 'index', methods: ['GET'])]
     public function index(
-        Request            $request,
-        ReservationRepository $reservationRepository,
-        PaginatorInterface $paginator
+        Request               $request,
+        ReservationRepository $reservationRepository
     ): Response
     {
-        $query = $reservationRepository->createQueryBuilder('h')->getQuery();
         $page = $request->query->getInt('page', 1);
+        $search = $request->query->getString('search');
 
-        $reservattions = $paginator->paginate($query, $page, 10);
+        $reservations = $reservationRepository->findByNumReservationLikePaginated($search, $page);
 
         return $this->render('admin/reservation/index.html.twig', [
-            'reservations' => $reservattions,
+            'reservations' => $reservations,
         ]);
     }
 

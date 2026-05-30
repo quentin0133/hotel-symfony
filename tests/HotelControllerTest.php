@@ -15,8 +15,8 @@ class HotelControllerTest extends WebTestCase
     public function when_listingHotelsAsAdmin_shouldReturn_listAllHotels(): void
     {
         $client = static::createClient();
-        $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $hotelRepository = $client->getContainer()->get(HotelRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
@@ -39,8 +39,8 @@ class HotelControllerTest extends WebTestCase
     public function when_creatingNewHotelAsAdmin_shouldReturn_createNewHotel(): void
     {
         $client = static::createClient();
-        $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $hotelRepository = $client->getContainer()->get(HotelRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $countBefore = $hotelRepository->count([]);
@@ -86,16 +86,15 @@ class HotelControllerTest extends WebTestCase
     public function when_showingSpecificHotelAsAdmin_shouldReturn_showHotel(): void
     {
         $client = static::createClient();
-        $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $hotelRepository = $client->getContainer()->get(HotelRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
 
-        $id = 1;
-        $hotel = $hotelRepository->findOneBy(['id' => $id]);
+        $hotel = $hotelRepository->findOneBy([]);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
-        $client->request('GET', '/admin/hotel/' . $id);
+        $client->request('GET', '/admin/hotel/' . $hotel->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Hôtel');
@@ -110,14 +109,14 @@ class HotelControllerTest extends WebTestCase
     public function when_editingSpecificHotelAsAdmin_shouldReturn_editHotel(): void
     {
         $client = static::createClient();
-        $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $hotelRepository = $client->getContainer()->get(HotelRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
-        $id = 1;
-        $client->request('GET', '/admin/hotel/' . $id . '/edit');
+        $hotel = $hotelRepository->findOneBy([]);
+        $client->request('GET', '/admin/hotel/' . $hotel->getId() . '/edit');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Modifier un Hôtel');
@@ -138,7 +137,7 @@ class HotelControllerTest extends WebTestCase
 
         $this->assertResponseRedirects('/admin/hotel');
 
-        $hotelDb = $hotelRepository->findOneBy(['id' => $id]);
+        $hotelDb = $hotelRepository->findOneBy(['id' => $hotel->getId()]);
         $this->assertNotNull($hotelDb, 'The hotel has not been modified.');
         $this->assertEquals($editedHotel->getCodeHotel(), $hotelDb->getCodeHotel());
         $this->assertEquals($editedHotel->getNomHotel(), $hotelDb->getNomHotel());
@@ -156,15 +155,12 @@ class HotelControllerTest extends WebTestCase
     public function when_deletingSpecificHotelAsAdmin_shouldReturn_deleteHotel(): void
     {
         $client = static::createClient();
-        $hotelRepository = static::getContainer()->get(HotelRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
-        $router = static::getContainer()->get(RouterInterface::class);
+        $hotelRepository = $client->getContainer()->get(HotelRepository::class);
+        $clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
+        $router = $client->getContainer()->get(RouterInterface::class);
 
-        $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
+        $testAdminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
-
-        $hotel = $hotelRepository->findOneBy([]);
-        $hotelId = $hotel->getId();
 
         $client->request('GET', '/admin/hotel');
 
@@ -176,10 +172,9 @@ class HotelControllerTest extends WebTestCase
 
         $client->submit($form);
 
-
         $this->assertResponseRedirects('/admin/hotel');
-        $deletedHotel = $hotelRepository->find($hotelId);
-        $this->assertNull($deletedHotel, "The hotel {$hotelId} was not deleted.");
+        $deletedHotel = $hotelRepository->findOneBy(['id' => $id]);
+        $this->assertNull($deletedHotel, "The hotel {$id} was not deleted.");
     }
 
     #[Test]
@@ -196,9 +191,9 @@ class HotelControllerTest extends WebTestCase
     public function when_showingSpecificHotelNotOwnAsClient_shouldReturn_errorForbidden(): void
     {
         $client = static::createClient();
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
 
-        $client->loginUser($clientHotelRespository->findOneByRole('ROLE_USER'));
+        $client->loginUser($clientHotelRespository->findOneByRole('ROLE_CLIENT'));
 
         $client->request('GET', '/admin/hotel/1');
 

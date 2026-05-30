@@ -17,8 +17,8 @@ class ChambreControllerTest extends WebTestCase
     public function when_listingChambresAsAdmin_shouldReturn_listAllChambres(): void
     {
         $client = static::createClient();
-        $chambreRepository = static::getContainer()->get(ChambreRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $chambreRepository = $client->getContainer()->get(ChambreRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
@@ -42,9 +42,9 @@ class ChambreControllerTest extends WebTestCase
     public function when_creatingNewChambreAsAdmin_shouldReturn_createNewChambre(): void
     {
         $client = static::createClient();
-        $chambreRepository = static::getContainer()->get(ChambreRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
-        $hotelRepository = static::getContainer()->get(HotelRepository::class);
+        $chambreRepository = $client->getContainer()->get(ChambreRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
+        $hotelRepository = $client->getContainer()->get(HotelRepository::class);
 
         $hotel = $hotelRepository->findOneBy([]);
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
@@ -94,10 +94,11 @@ class ChambreControllerTest extends WebTestCase
     public function when_showingSpecificChambreAsAdmin_shouldReturn_showChambre(): void
     {
         $client = static::createClient();
-        $chambreRepository = static::getContainer()->get(ChambreRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $chambreRepository = $client->getContainer()->get(ChambreRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
 
-        $id = 1;
+        $chambre = $chambreRepository->findOneBy([]);
+        $id = $chambre->getId();
         $chambre = $chambreRepository->findOneBy(['id' => $id]);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
@@ -118,15 +119,16 @@ class ChambreControllerTest extends WebTestCase
     public function when_editingSpecificChambreAsAdmin_shouldReturn_editChambre(): void
     {
         $client = static::createClient();
-        $chambreRepository = static::getContainer()->get(ChambreRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
-        $hotelRepository = static::getContainer()->get( HotelRepository::class);
+        $chambreRepository = $client->getContainer()->get(ChambreRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
+        $hotelRepository = $client->getContainer()->get( HotelRepository::class);
 
         $hotel = $hotelRepository->findOneBy([]);
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
 
-        $id = 1;
+        $chambre = $chambreRepository->findOneBy([]);
+        $id = $chambre->getId();
         $client->request('GET', '/admin/chambre/' . $id . '/edit');
 
         $this->assertResponseIsSuccessful();
@@ -169,9 +171,9 @@ class ChambreControllerTest extends WebTestCase
     public function when_deletingSpecificChambreAsAdmin_shouldReturn_deleteChambre(): void
     {
         $client = static::createClient();
-        $chambreRepository = static::getContainer()->get(ChambreRepository::class);
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
-        $router = static::getContainer()->get(RouterInterface::class);
+        $chambreRepository = $client->getContainer()->get(ChambreRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
+        $router = $client->getContainer()->get(RouterInterface::class);
 
         $testAdminUser = $clientHotelRespository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);
@@ -208,9 +210,9 @@ class ChambreControllerTest extends WebTestCase
     public function when_showingSpecificChambreNotOwnAsClient_shouldReturn_errorForbidden(): void
     {
         $client = static::createClient();
-        $clientHotelRespository = static::getContainer()->get(ClientRepository::class);
+        $clientHotelRespository = $client->getContainer()->get(ClientRepository::class);
 
-        $client->loginUser($clientHotelRespository->findOneByRole('ROLE_USER'));
+        $client->loginUser($clientHotelRespository->findOneByRole('ROLE_CLIENT'));
 
         $client->request('GET', '/admin/chambre/1');
 
