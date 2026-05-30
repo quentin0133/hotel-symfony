@@ -29,8 +29,7 @@ class ReservationRepository extends ServiceEntityRepository
             ->where('r.client = :client')
             ->setParameter('client', $client)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     public function findByNumReservationLikePaginated(string $numReservation, int $page, int $limit = 10): PaginationInterface
