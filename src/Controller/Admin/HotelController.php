@@ -22,10 +22,10 @@ final class HotelController extends AbstractController
         PaginatorInterface $paginator
     ): Response
     {
-        $query = $hotelRepository->createQueryBuilder('h')->getQuery();
         $page = $request->query->getInt('page', 1);
+        $search = $request->query->getString('search');
 
-        $hotels = $paginator->paginate($query, $page, 10);
+        $hotels = $hotelRepository->findByCodeHotelLikePaginated($search, $page);
 
         return $this->render('admin/hotel/index.html.twig', [
             'hotels' => $hotels,

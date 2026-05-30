@@ -31,8 +31,8 @@ class ReservationRepository extends ServiceEntityRepository
 
         if (!empty($numReservation)) {
             $query = $this->createQueryBuilder('r')
-                ->where('r.numReservation LIKE :numReservation')
-                ->setParameter('numReservation', '%' . $numReservation . '%')
+                ->where('r.numReservation LIKE :codeHotel')
+                ->setParameter('codeHotel', '%' . $numReservation . '%')
             ;
         }
 
@@ -50,8 +50,8 @@ class ReservationRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('r');
         if (!empty($numReservation)) {
             $query = $query
-                ->where('r.numReservation LIKE :numReservation')
-                ->setParameter('numReservation', '%' . $numReservation . '%')
+                ->where('r.numReservation LIKE :codeHotel')
+                ->setParameter('codeHotel', '%' . $numReservation . '%')
             ;
         }
         return $this->paginator->paginate($query->getQuery(), $page, $limit);

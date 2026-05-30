@@ -5,39 +5,29 @@ namespace App\Repository;
 use App\Entity\Hotel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @extends ServiceEntityRepository<Hotel>
  */
 class HotelRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginator)
     {
         parent::__construct($registry, Hotel::class);
     }
 
-    //    /**
-    //     * @return Hotel[] Returns an array of Hotel objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('h')
-    //            ->andWhere('h.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('h.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Hotel
-    //    {
-    //        return $this->createQueryBuilder('h')
-    //            ->andWhere('h.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findByCodeHotelLikePaginated(string $codeHotel, int $page, int $limit = 10): PaginationInterface
+    {
+        $codeHotel = trim($codeHotel);
+        $query = $this->createQueryBuilder('r');
+        if (!empty($codeHotel)) {
+            $query = $query
+                ->where('r.codeHotel LIKE :codeHotel')
+                ->setParameter('codeHotel', '%' . $codeHotel . '%')
+            ;
+        }
+        return $this->paginator->paginate($query->getQuery(), $page, $limit);
+    }
 }
