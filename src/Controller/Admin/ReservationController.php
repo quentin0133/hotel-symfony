@@ -15,10 +15,18 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ReservationController extends AbstractController
 {
     #[Route(name: 'index', methods: ['GET'])]
-    public function index(ReservationRepository $reservationRepository): Response
+    public function index(
+        Request               $request,
+        ReservationRepository $reservationRepository
+    ): Response
     {
+        $page = $request->query->getInt('page', 1);
+        $search = $request->query->getString('search');
+
+        $reservations = $reservationRepository->findByNumReservationLikePaginated($search, $page);
+
         return $this->render('admin/reservation/index.html.twig', [
-            'reservations' => $reservationRepository->findAll(),
+            'reservations' => $reservations,
         ]);
     }
 
@@ -71,7 +79,7 @@ final class ReservationController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$reservation->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $reservation->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($reservation);
             $entityManager->flush();
         }

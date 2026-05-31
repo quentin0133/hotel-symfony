@@ -17,10 +17,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class ReservationController extends AbstractController
 {
     #[Route(name: 'index', methods: ['GET'])]
-    public function index(ReservationRepository $reservationRepository): Response
+    public function index(
+        Request               $request,
+        ReservationRepository $reservationRepository
+    ): Response
     {
+        $page = $request->query->getInt('page', 1);
+        $search = $request->query->getString('search');
+
+        $reservations = $reservationRepository->findByClientAndNumReservationLikePaginated($this->getUser(), $search, $page);
+
         return $this->render('client/reservation/index.html.twig', [
-            'reservations' => $reservationRepository->findByClient($this->getUser()),
+            'reservations' => $reservations,
         ]);
     }
 

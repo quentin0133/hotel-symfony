@@ -6,6 +6,7 @@ use App\Entity\Hotel;
 use App\Form\HotelType;
 use App\Repository\HotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,10 +16,19 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HotelController extends AbstractController
 {
     #[Route(name: 'index', methods: ['GET'])]
-    public function index(HotelRepository $hotelRepository): Response
+    public function index(
+        Request            $request,
+        HotelRepository    $hotelRepository,
+        PaginatorInterface $paginator
+    ): Response
     {
+        $page = $request->query->getInt('page', 1);
+        $search = $request->query->getString('search');
+
+        $hotels = $hotelRepository->findByCodeHotelLikePaginated($search, $page);
+
         return $this->render('admin/hotel/index.html.twig', [
-            'hotels' => $hotelRepository->findAll(),
+            'hotels' => $hotels,
         ]);
     }
 

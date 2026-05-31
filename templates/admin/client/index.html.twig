@@ -7,6 +7,11 @@
 
     <a class="btn btn-primary my-2" href="{{ path('admin.client.new') }}">Ajouter un Client</a>
 
+    <form class="d-flex" method="get" action="{{ path('admin.client.index') }}">
+        <input class="form-control me-2" name="search" type="search" placeholder="Rechercher..." aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Rechercher</button>
+    </form>
+
     <table class="table">
         <thead>
             <tr>
@@ -14,8 +19,9 @@
                 <th>Email</th>
                 <th>Rôles</th>
                 <th>Code Client</th>
-                <th>Nom Client</th>
-                <th>Adresse Client</th>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Téléphone</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -28,6 +34,7 @@
                 <td>{{ client.codeClient }}</td>
                 <td>{{ client.nomClient }}</td>
                 <td>{{ client.adrClient }}</td>
+                <td>{{ client.telClient }}</td>
                 <td>
                     <div class="d-flex gap-1">
                         <a class="btn btn-primary py-2 d-inline-flex align-items-center justify-content-center" href="{{ path('admin.client.show', {'id': client.id}) }}">{{ ux_icon('bi:eye-fill') }}</a>
@@ -43,4 +50,8 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(clients) }}
+    </div>
 {% endblock %}

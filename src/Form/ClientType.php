@@ -32,10 +32,7 @@ class ClientType extends AbstractType
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
-                'required' => !$isEdit,
-                'constraints' => $isEdit
-                    ? [new When('value != ""', [new Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')])]
-                    : [new NotBlank(message: 'Le mot de passe est requis.'), new Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')],
+                'mapped' => false
             ])
             ->add('codeClient', TextType::class)
             ->add('nomClient', TextType::class, [

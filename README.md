@@ -67,13 +67,21 @@ Le site est divisé en trois espaces distincts avec des niveaux d'accès spécif
 
 Dupliquez le fichier `.env` en `.env.local` et configurez votre chaîne de connexion MariaDB :
    ```env
-   DATABASE_URL="mysql://utilisateur:mot_de_passe@127.0.0.1:3306/nom_de_la_base?serverVersion=mariadb-10.x.x"
+   DATABASE_URL="mysql://utilisateur:mot_de_passe@127.0.0.1:3307/nom_de_la_base?serverVersion=mariadb-10.x.x"
    ```
+
+Dupliquez aussi le fichier `.env.test` en `.env.test.local`, la démarche est la même (seulement si vous voulez exécuter les tests) :
 
 4. **Créer la base de données et appliquer les migrations :**
    ```bash
    php bin/console doctrine:database:create
    php bin/console doctrine:migrations:migrate
+   ```
+   
+Vous pouvez faire la même commande pour les tests :
+   ```bash
+   php bin/console doctrine:database:create --env=test
+   php bin/console doctrine:migrations:migrate --env=test
    ```
 
 5. **(Optionnel) Charger les données de test (Fixtures) :**

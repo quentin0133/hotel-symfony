@@ -7,6 +7,11 @@
 
     <a class="btn btn-primary my-2" href="{{ path('admin.chambre.new') }}">Ajouter une Chambre</a>
 
+    <form class="d-flex" method="get" action="{{ path('admin.chambre.index') }}">
+        <input class="form-control me-2" name="search" type="search" placeholder="Rechercher..." aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Rechercher</button>
+    </form>
+
     <table class="table">
         <thead>
             <tr>
@@ -41,4 +46,8 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(chambres) }}
+    </div>
 {% endblock %}

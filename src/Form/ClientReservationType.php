@@ -25,6 +25,7 @@ class ClientReservationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('numReservation', TextType::class)
             ->add('dateDebut', DateType::class)
             ->add('dateFin', DateType::class)
             ->add('commentaire', TextType::class, [
@@ -39,7 +40,8 @@ class ClientReservationType extends AbstractType
                 'class' => Chambre::class,
                 'choice_label' => 'codeChambre',
                 'multiple' => true,
-                'expanded' => true
+                'expanded' => true,
+                'by_reference' => false
             ])
         ;
     }

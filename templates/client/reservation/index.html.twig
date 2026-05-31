@@ -7,10 +7,16 @@
 
     <a class="btn btn-primary my-2" href="{{ path('client.reservation.new') }}">Ajouter une réservation</a>
 
+    <form class="d-flex" method="get" action="{{ path('client.reservation.index') }}">
+        <input class="form-control me-2" name="search" type="search" placeholder="Rechercher..." aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Rechercher</button>
+    </form>
+
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Numéro de réservation</th>
                 <th>Date Début</th>
                 <th>Date Fin</th>
                 <th>Commentaire</th>
@@ -21,6 +27,7 @@
         {% for reservation in reservations %}
             <tr>
                 <td>{{ reservation.id }}</td>
+                <td>{{ reservation.numReservation }}</td>
                 <td>{{ reservation.dateDebut ? reservation.dateDebut|date('d/m/Y') : '' }}</td>
                 <td>{{ reservation.dateFin ? reservation.dateFin|date('d/m/Y') : '' }}</td>
                 <td>{{ reservation.commentaire ? reservation.commentaire : '(Aucun commentaire)' }}</td>

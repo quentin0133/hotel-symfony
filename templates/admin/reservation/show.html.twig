@@ -12,6 +12,10 @@
                 <td>{{ reservation.id }}</td>
             </tr>
             <tr>
+                <th>Numéro de réservation</th>
+                <td>{{ reservation.numReservation }}</td>
+            </tr>
+            <tr>
                 <th>Date Début</th>
                 <td>{{ reservation.dateDebut ? reservation.dateDebut|date('d/m/Y') : '' }}</td>
             </tr>
