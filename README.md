@@ -94,3 +94,21 @@ Vous pouvez faire la même commande pour les tests :
    symfony serve -d
    ```
    *Accédez à l'application via `http://localhost:8000`.*
+
+---
+
+## Envoi d'emails en développement (Mailpit)
+
+Les emails (ex : réinitialisation de mot de passe) sont interceptés localement par [Mailpit](https://github.com/axllent/mailpit) — aucun mail n'est envoyé pour de vrai.
+
+**Lancer Mailpit avec Docker :**
+```bash
+docker run -d -p 1025:1025 -p 8025:8025 axllent/mailpit
+```
+
+**Configurer le mailer dans `.env.local` :**
+```env
+MAILER_DSN=smtp://localhost:1025
+```
+
+**Consulter les emails reçus :** `http://localhost:8025`
