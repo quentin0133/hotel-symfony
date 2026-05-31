@@ -10,11 +10,16 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\When;
 
 class ClientType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $isEdit = $options['is_edit'];
+
         $builder
             ->add('email', EmailType::class)
             ->add('roles', ChoiceType::class, [
@@ -27,11 +32,18 @@ class ClientType extends AbstractType
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
+                'required' => !$isEdit,
+                'constraints' => $isEdit
+                    ? [new When('value != ""', [new Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')])]
+                    : [new NotBlank(message: 'Le mot de passe est requis.'), new Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')],
             ])
             ->add('codeClient', TextType::class)
-            ->add('nomClient', TextType::class)
+            ->add('nomClient', TextType::class, [
+                'required' => false,
+            ])
             ->add('adrClient', TextType::class, [
                 'label' => 'Adresse client',
+                'required' => false,
             ])
         ;
     }
@@ -40,6 +52,7 @@ class ClientType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Client::class,
+            'is_edit' => false,
         ]);
     }
 }

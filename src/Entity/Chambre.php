@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\ChambreTypeEnum;
 use App\Repository\ChambreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ChambreRepository::class)]
 class Chambre
@@ -15,12 +16,17 @@ class Chambre
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le code chambre est requis.')]
+    #[Assert\Length(max: 255, maxMessage: 'Le code chambre ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $codeChambre = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero(message: 'L\'étage doit être un nombre positif ou zéro.')]
     private ?int $etage = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Le nombre de lits est requis.')]
+    #[Assert\Positive(message: 'Le nombre de lits doit être au moins 1.')]
     private ?int $nombreLit = null;
 
     #[ORM\ManyToOne(inversedBy: 'Chambre')]

@@ -6,6 +6,7 @@ use App\Repository\HotelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HotelRepository::class)]
 class Hotel
@@ -16,12 +17,18 @@ class Hotel
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le code hôtel est requis.')]
+    #[Assert\Length(max: 255, maxMessage: 'Le code hôtel ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $codeHotel = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom de l\'hôtel est requis.')]
+    #[Assert\Length(max: 255, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $nomHotel = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'L\'adresse de l\'hôtel est requise.')]
+    #[Assert\Length(max: 255, maxMessage: 'L\'adresse ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $adresseHotel = null;
 
     #[ORM\Column(length: 255, nullable: true)]
