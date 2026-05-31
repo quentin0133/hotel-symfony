@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Chambre;
+use App\Entity\Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -28,5 +29,27 @@ class ChambreRepository extends ServiceEntityRepository
                 ->setParameter('codeChambre', '%' . $codeChambre . '%');
         }
         return $this->paginator->paginate($query->getQuery(), $page, $limit);
+    }
+
+    /**
+     * Retourne les chambres sans aucune réservation qui chevauche la période [dateDebut, dateFin[.
+     *
+     * @return Chambre[]
+     */
+    public function findAvailableBetweenDates(\DateTime $dateDebut, \DateTime $dateFin): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.hotel', 'h')
+            ->addSelect('h')
+            ->where('c NOT IN (
+                SELECT c2 FROM ' . Reservation::class . ' r JOIN r.chambres c2
+                WHERE r.dateDebut < :dateFin AND r.dateFin > :dateDebut
+            )')
+            ->setParameter('dateDebut', $dateDebut)
+            ->setParameter('dateFin', $dateFin)
+            ->orderBy('h.nomHotel')
+            ->addOrderBy('c.codeChambre')
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -29,7 +29,7 @@ class Chambre
     #[Assert\Positive(message: 'Le nombre de lits doit être au moins 1.')]
     private ?int $nombreLit = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Chambre')]
+    #[ORM\ManyToOne(inversedBy: 'chambres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Hotel $hotel = null;
 
