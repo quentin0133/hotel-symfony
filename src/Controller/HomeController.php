@@ -27,7 +27,8 @@ final class HomeController extends AbstractController
             } elseif ($dateFin <= $dateDebut) {
                 $error = 'La date de fin doit être postérieure à la date de début.';
             } else {
-                $chambresDisponibles = $chambreRepository->findAvailableBetweenDates($dateDebut, $dateFin);
+                $page = $request->query->getInt('page', 1);
+                $chambresDisponibles = $chambreRepository->findAvailableBetweenDates($dateDebut, $dateFin, $page);
             }
         }
 

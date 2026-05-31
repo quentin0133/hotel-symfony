@@ -29,7 +29,7 @@
     {% if chambresDisponibles is empty %}
         <div class="alert alert-warning">Aucune chambre disponible pour cette période.</div>
     {% else %}
-        <p class="text-muted">{{ chambresDisponibles|length }} chambre(s) disponible(s) du
+        <p class="text-muted">{{ chambresDisponibles.getTotalItemCount() }} chambre(s) disponible(s) du
             <strong>{{ dateDebut|date('d/m/Y') }}</strong> au
             <strong>{{ dateFin|date('d/m/Y') }}</strong>
         </p>
@@ -69,6 +69,9 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(chambresDisponibles) }}
+        </div>
     {% endif %}
 {% endif %}
 {% endblock %}

@@ -32,13 +32,11 @@ class ChambreRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne les chambres sans aucune réservation qui chevauche la période [dateDebut, dateFin[.
-     *
-     * @return Chambre[]
+     * Retourne les chambres disponibles sur la période, paginées.
      */
-    public function findAvailableBetweenDates(\DateTime $dateDebut, \DateTime $dateFin): array
+    public function findAvailableBetweenDates(\DateTime $dateDebut, \DateTime $dateFin, int $page, int $limit = 10): PaginationInterface
     {
-        return $this->createQueryBuilder('c')
+        $query = $this->createQueryBuilder('c')
             ->leftJoin('c.hotel', 'h')
             ->addSelect('h')
             ->where('c NOT IN (
@@ -49,7 +47,8 @@ class ChambreRepository extends ServiceEntityRepository
             ->setParameter('dateFin', $dateFin)
             ->orderBy('h.nomHotel')
             ->addOrderBy('c.codeChambre')
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        return $this->paginator->paginate($query, $page, $limit);
     }
 }
