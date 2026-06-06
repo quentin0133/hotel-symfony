@@ -74,14 +74,13 @@ Dupliquez aussi le fichier `.env.test` en `.env.test.local`, la démarche est la
 
 4. **Créer la base de données et appliquer les migrations :**
    ```bash
-   php bin/console doctrine:database:create
+   php bin/console doctrine:scheme:create
    php bin/console doctrine:migrations:migrate
    ```
    
-Vous pouvez faire la même commande pour les tests :
+Vous pouvez faire une commande équivalente pour les tests :
    ```bash
-   php bin/console doctrine:database:create --env=test
-   php bin/console doctrine:migrations:migrate --env=test
+   php bin/console doctrine:scheme:create --env=test
    ```
 
 5. **(Optionnel) Charger les données de test (Fixtures) :**
@@ -112,3 +111,5 @@ MAILER_DSN=smtp://localhost:1025
 ```
 
 **Consulter les emails reçus :** `http://localhost:8025`
+
+**Consulter sonarqube :** `http://localhost:9000`
