@@ -112,4 +112,31 @@ MAILER_DSN=smtp://localhost:1025
 
 **Consulter les emails reçus :** `http://localhost:8025`
 
-**Consulter sonarqube :** `http://localhost:9000`
+Pour Sonarquebe, ajouter le fichier sonar-project.properties et configurer
+le à l'aide de cette configuration :
+```env
+sonar.host.url=http://host.docker.internal:9000
+sonar.token=VOTRE_TOKEN
+
+sonar.projectKey=Hotel-symfony
+sonar.projectName=Hotel symfony
+sonar.sources=src
+
+sonar.exclusions=vendor/**, var/**, public/**, tests/**
+```
+
+**Lancer Sonarqube avec Docker :**
+```env
+docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:community
+```
+
+**Lancer une analyse :**
+```env
+sonar-scanner \
+    -Dsonar.projectKey=nom_projet \
+    -Dsonar.sources=. \
+    -Dsonar.host.url=http://localhost:9000 \
+    -Dsonar.token=token_sonarqube
+```
+
+**Consulter Sonarqube et ses analyses :** `http://localhost:9000`
