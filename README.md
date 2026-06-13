@@ -115,11 +115,11 @@ MAILER_DSN=smtp://localhost:1025
 Pour Sonarquebe, ajouter le fichier sonar-project.properties et configurer
 le à l'aide de cette configuration :
 ```env
-sonar.host.url=http://host.docker.internal:9000
+sonar.host.url=http://localhost:9000
 sonar.token=VOTRE_TOKEN
 
-sonar.projectKey=Hotel-symfony
-sonar.projectName=Hotel symfony
+sonar.projectKey=project-key-sonar
+sonar.projectName=project-name
 sonar.sources=src
 
 sonar.exclusions=vendor/**, var/**, public/**, tests/**
