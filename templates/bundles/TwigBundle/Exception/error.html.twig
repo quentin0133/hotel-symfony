@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page introuvable{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column align-items-center gap-4 mt-5">
+        <h1>Oups ! Erreur !</h1>
+        <p>Une erreur s'est produite, veuillez contacter l'admin ou réessayez plus tard.</p>
+        <a href="{{ path('home.index') }}" class="btn btn-primary w-25">Retour à l'accueil</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page introuvable{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column align-items-center gap-4 mt-5">
+        <h1>Hâlte ! Erreur 401 !</h1>
+        <p>Vous ne pouvez pas aller à cette page, vous n'avez pas les droits.</p>
+        <a href="{{ path('app_home') }}" class="btn btn-primary">
+            Retour à l'accueil
+        </a>
+        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-secondary">
+            Retour à la page précédente
+        </a>
+    </div>
+{% endblock %}
