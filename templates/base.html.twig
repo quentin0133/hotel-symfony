@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr-FR">
     <head>
-        <meta charset="UTF-8"s>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Hôtel - {% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
@@ -21,7 +22,7 @@
     <body class="bg-info-subtle d-flex flex-column min-vh-100">
         {% include 'navbar/navbar.html.twig' %}
 
-        <main class="w-75 mx-auto my-4 p-4 bg-light-subtle flex-grow-1">
+        <main class="container my-4 p-4 bg-light-subtle flex-grow-1">
             {% block body %}{% endblock %}
         </main>
     </body>

@@ -12,6 +12,7 @@
         <button class="btn btn-outline-success" type="submit">Rechercher</button>
     </form>
 
+    <div class="table-responsive">
     <table class="table">
         <thead>
             <tr>
@@ -50,6 +51,7 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 
     <div class="d-flex justify-content-center mt-4">
         {{ knp_pagination_render(clients) }}
