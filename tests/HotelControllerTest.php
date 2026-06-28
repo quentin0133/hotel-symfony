@@ -11,6 +11,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 class HotelControllerTest extends WebTestCase
 {
+    /**
+     * Verifies that an administrator can access the hotel listing and see the correct data displayed.
+     */
     #[Test]
     public function when_listingHotelsAsAdmin_shouldReturn_listAllHotels(): void
     {
@@ -35,6 +38,9 @@ class HotelControllerTest extends WebTestCase
         $this->assertSelectorTextContains('tbody', $hotel->getCategorieHotel());
     }
 
+    /**
+     * Ensures an administrator can successfully create a new hotel via the form submission.
+     */
     #[Test]
     public function when_creatingNewHotelAsAdmin_shouldReturn_createNewHotel(): void
     {
@@ -82,6 +88,9 @@ class HotelControllerTest extends WebTestCase
         $this->assertEquals('admin.hotel.index', $client->getRequest()->attributes->get('_route'));
     }
 
+    /**
+     * Verifies that an administrator can view the details of a specific hotel.
+     */
     #[Test]
     public function when_showingSpecificHotelAsAdmin_shouldReturn_showHotel(): void
     {
@@ -105,6 +114,9 @@ class HotelControllerTest extends WebTestCase
         $this->assertSelectorTextContains('tbody tr:nth-child(5) td', $hotel->getCategorieHotel());
     }
 
+    /**
+     * Checks that an administrator can edit an existing hotel's information.
+     */
     #[Test]
     public function when_editingSpecificHotelAsAdmin_shouldReturn_editHotel(): void
     {
@@ -151,6 +163,9 @@ class HotelControllerTest extends WebTestCase
         $this->assertEquals('admin.hotel.index', $client->getRequest()->attributes->get('_route'));
     }
 
+    /**
+     * Validates that an administrator can delete a hotel using the dedicated form.
+     */
     #[Test]
     public function when_deletingSpecificHotelAsAdmin_shouldReturn_deleteHotel(): void
     {
@@ -177,6 +192,9 @@ class HotelControllerTest extends WebTestCase
         $this->assertNull($deletedHotel, "The hotel {$id} was not deleted.");
     }
 
+    /**
+     * Ensures anonymous users are redirected to the login page when attempting to access the admin area.
+     */
     #[Test]
     public function when_listingHotelsAsNotConnected_shouldReturn_errorForbidden(): void
     {
@@ -187,6 +205,9 @@ class HotelControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
     }
 
+    /**
+     * Verifies that a standard client cannot access the admin hotel display page (HTTP 403 Forbidden).
+     */
     #[Test]
     public function when_showingSpecificHotelNotOwnAsClient_shouldReturn_errorForbidden(): void
     {

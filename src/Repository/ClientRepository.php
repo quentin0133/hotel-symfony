@@ -35,6 +35,9 @@ class ClientRepository extends ServiceEntityRepository implements PasswordUpgrad
         $this->getEntityManager()->flush();
     }
 
+    /**
+     *
+     */
     public function findByNameOrEmailLikePaginated(string $nameOrEmail, int $page, int $limit = 10): PaginationInterface
     {
         $nameOrEmail = trim($nameOrEmail);
@@ -49,6 +52,9 @@ class ClientRepository extends ServiceEntityRepository implements PasswordUpgrad
         return $this->paginator->paginate($query->getQuery(), $page, $limit);
     }
 
+    /**
+     *
+     */
     public function findOneByRole(string $role): ?Client
     {
         return $this->createQueryBuilder('c')

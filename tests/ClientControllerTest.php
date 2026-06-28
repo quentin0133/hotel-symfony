@@ -5,12 +5,7 @@ namespace App\Tests;
 use AllowDynamicProperties;
 use App\Entity\Client as ClientHotel;
 use App\Repository\ClientRepository;
-use Doctrine\DBAL\Exception;
-use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\Attributes\After;
-use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\Test;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -22,7 +17,7 @@ class ClientControllerTest extends WebTestCase
     public function when_listingClientHotelAsAdmin_shouldReturn_listAllClientHotel(): void
     {
         $client = static::createClient();
-        $this->clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
+        $this->clientHotelRepository = $client ->getContainer()->get(ClientRepository::class);
 
         $testAdminUser = $this->clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($testAdminUser);

@@ -11,7 +11,6 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\RouterInterface;
 use function PHPUnit\Framework\assertNotNull;
-use function PHPUnit\Framework\assertNull;
 
 class ReservationControllerTest extends WebTestCase
 {

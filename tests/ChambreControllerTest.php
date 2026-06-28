@@ -13,6 +13,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ChambreControllerTest extends WebTestCase
 {
+    /**
+     * Verifies that an administrator can access the room (chambre) listing and see the correct data displayed.
+     */
     #[Test]
     public function when_listingChambresAsAdmin_shouldReturn_listAllChambres(): void
     {
@@ -37,7 +40,9 @@ class ChambreControllerTest extends WebTestCase
         $this->assertSelectorTextContains('tbody', $chambre->getNombreLit());
     }
 
-
+    /**
+     * Ensures an administrator can successfully create a new room via the form submission.
+     */
     #[Test]
     public function when_creatingNewChambreAsAdmin_shouldReturn_createNewChambre(): void
     {
@@ -90,6 +95,9 @@ class ChambreControllerTest extends WebTestCase
         $this->assertEquals('admin.chambre.index', $client->getRequest()->attributes->get('_route'));
     }
 
+    /**
+     * Verifies that an administrator can view the detailed information of a specific room.
+     */
     #[Test]
     public function when_showingSpecificChambreAsAdmin_shouldReturn_showChambre(): void
     {
@@ -115,6 +123,9 @@ class ChambreControllerTest extends WebTestCase
         $this->assertSelectorTextContains('tbody tr:nth-child(5) td', $chambre->getNombreLit());
     }
 
+    /**
+     * Checks that an administrator can edit an existing room's information.
+     */
     #[Test]
     public function when_editingSpecificChambreAsAdmin_shouldReturn_editChambre(): void
     {
@@ -167,6 +178,9 @@ class ChambreControllerTest extends WebTestCase
         $this->assertEquals('admin.chambre.index', $client->getRequest()->attributes->get('_route'));
     }
 
+    /**
+     * Validates that an administrator can delete a room using the dedicated form.
+     */
     #[Test]
     public function when_deletingSpecificChambreAsAdmin_shouldReturn_deleteChambre(): void
     {
@@ -196,6 +210,9 @@ class ChambreControllerTest extends WebTestCase
         $this->assertNull($deletedChambre, "The chambre {$chambreId} was not deleted.");
     }
 
+    /**
+     * Ensures anonymous users are redirected to the login page when attempting to access the admin area.
+     */
     #[Test]
     public function when_listingChambresAsNotConnected_shouldReturn_errorForbidden(): void
     {
@@ -206,6 +223,9 @@ class ChambreControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
     }
 
+    /**
+     * Verifies that a standard client cannot access the admin room display page (HTTP 403 Forbidden).
+     */
     #[Test]
     public function when_showingSpecificChambreNotOwnAsClient_shouldReturn_errorForbidden(): void
     {

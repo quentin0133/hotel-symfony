@@ -18,6 +18,13 @@ class HotelRepository extends ServiceEntityRepository
         parent::__construct($registry, Hotel::class);
     }
 
+    /**
+     * Finds hotels
+     * @param string $codeHotel
+     * @param int $page
+     * @param int $limit
+     * @return PaginationInterface
+     */
     public function findByCodeHotelLikePaginated(string $codeHotel, int $page, int $limit = 10): PaginationInterface
     {
         $codeHotel = trim($codeHotel);
