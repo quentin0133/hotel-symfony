@@ -19,11 +19,11 @@ class HotelRepository extends ServiceEntityRepository
     }
 
     /**
-     * Finds hotels
-     * @param string $codeHotel
-     * @param int $page
-     * @param int $limit
-     * @return PaginationInterface
+     * Finds hotels by a partial match on their code
+     * @param string $codeHotel The partial or full hotel code to search for
+     * @param int $page The current page number for pagination
+     * @param int $limit The maximum number of items per page (default: 10)
+     * @return PaginationInterface The paginated list of rooms matching the code
      */
     public function findByCodeHotelLikePaginated(string $codeHotel, int $page, int $limit = 10): PaginationInterface
     {

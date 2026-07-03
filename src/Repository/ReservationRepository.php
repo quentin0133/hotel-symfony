@@ -19,6 +19,14 @@ class ReservationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reservation::class);
     }
 
+    /**
+     * Finds reservations for a specific client, optionally filtered by a partial reservation number.
+     * @param Client|null $client         The client entity to filter by
+     * @param string      $numReservation The partial or full reservation number to search for
+     * @param int         $page           The current page number for pagination
+     * @param int         $limit          The maximum number of items per page (default: 10)
+     * @return PaginationInterface The paginated list of matching reservations or an empty pagination array if none is found
+     */
     public function findByClientAndNumReservationLikePaginated(?Client $client, string $numReservation, int $page, int $limit = 10): PaginationInterface
     {
         if ($client === null) {
@@ -30,8 +38,8 @@ class ReservationRepository extends ServiceEntityRepository
 
         if (!empty($numReservation)) {
             $query = $this->createQueryBuilder('r')
-                ->where('r.numReservation LIKE :codeHotel')
-                ->setParameter('codeHotel', '%' . $numReservation . '%')
+                ->where('r.numReservation LIKE :numReservation')
+                ->setParameter('numReservation', '%' . $numReservation . '%')
             ;
         }
 
@@ -43,14 +51,21 @@ class ReservationRepository extends ServiceEntityRepository
         return $this->paginator->paginate($query->getQuery(), $page, $limit);
     }
 
+    /**
+     * Finds all reservations filtered by a partial reservation number across all clients.
+     * @param string $numReservation The partial or full reservation number to search for
+     * @param int    $page           The current page number for pagination
+     * @param int    $limit          The maximum number of items per page (default: 10)
+     * @return PaginationInterface The paginated list of matching reservations
+     */
     public function findByNumReservationLikePaginated(string $numReservation, int $page, int $limit = 10): PaginationInterface
     {
         $numReservation = trim($numReservation);
         $query = $this->createQueryBuilder('r');
         if (!empty($numReservation)) {
             $query = $query
-                ->where('r.numReservation LIKE :codeHotel')
-                ->setParameter('codeHotel', '%' . $numReservation . '%')
+                ->where('r.numReservation LIKE :numReservation')
+                ->setParameter('numReservation', '%' . $numReservation . '%')
             ;
         }
         return $this->paginator->paginate($query->getQuery(), $page, $limit);
