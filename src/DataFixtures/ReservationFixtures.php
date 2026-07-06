@@ -11,10 +11,19 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
+/**
+ * Generates sample data for the Reservation entity.
+ * Implements dependency management to ensure valid relational mapping during seeding.
+ */
 class ReservationFixtures extends Fixture implements DependentFixtureInterface
 {
+    /** The total number of reservation fixtures to generate */
     public const NUMBER_FIXTURES = 20;
 
+    /**
+     * Loads the reservation fixtures into the database.
+     * @param ObjectManager $manager The Doctrine object manager responsible for persistence
+     */
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
@@ -43,6 +52,10 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
+    /**
+     * Defines the fixtures that must be fully loaded prior to running this class.
+     * @return array<int, class-string<Fixture>> The list of dependency fixture classes
+     */
     public function getDependencies(): array
     {
         return [

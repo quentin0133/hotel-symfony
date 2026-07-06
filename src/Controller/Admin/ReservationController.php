@@ -11,9 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Manages reservation entities and configuration settings within the back-office ecosystem.
+ */
 #[Route('/admin/reservation', name: 'admin.reservation.')]
 final class ReservationController extends AbstractController
 {
+    /**
+     * Displays a list of paginated reservations.
+     */
     #[Route(name: 'index', methods: ['GET'])]
     public function index(
         Request               $request,
@@ -30,6 +36,9 @@ final class ReservationController extends AbstractController
         ]);
     }
 
+    /**
+     * Creates a new reservation
+     */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -50,6 +59,9 @@ final class ReservationController extends AbstractController
         ]);
     }
 
+    /**
+     * Displays a specific reservation.
+     */
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Reservation $reservation): Response
     {
@@ -58,6 +70,9 @@ final class ReservationController extends AbstractController
         ]);
     }
 
+    /**
+     * Edits a reservation.
+     */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
     {
@@ -76,6 +91,9 @@ final class ReservationController extends AbstractController
         ]);
     }
 
+    /**
+     * Delete a reservation
+     */
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
     {

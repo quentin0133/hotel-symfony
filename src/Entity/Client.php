@@ -11,6 +11,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Represents a registered client in the system.
+ * Serves as the core User entity for Symfony's security and authentication system.
+ */
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
@@ -26,15 +30,9 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: "L'adresse email '{{ value }}' n'est pas valide.")]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
@@ -49,30 +47,40 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adrClient = null;
 
-    /**
-     * @var Collection<int, Reservation>
-     */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'client', orphanRemoval: true)]
     private Collection $reservations;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $telClient = null;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * @param string $email
+     * @return $this
+     */
     public function setEmail(string $email): static
     {
         $this->email = $email;
@@ -81,9 +89,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
+     * A visual identifier that represents this user in the security token.
      */
     public function getUserIdentifier(): string
     {
@@ -91,7 +97,8 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see UserInterface
+     * Retrieves the user roles, guaranteeing a baseline access level.
+     * @return list<string> The roles granted to the user
      */
     public function getRoles(): array
     {
@@ -113,13 +120,17 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see PasswordAuthenticatedUserInterface
+     * @return string|null
      */
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
+    /**
+     * @param string $password
+     * @return $this
+     */
     public function setPassword(string $password): static
     {
         $this->password = $password;
@@ -138,11 +149,18 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         return $data;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCodeClient(): ?string
     {
         return $this->codeClient;
     }
 
+    /**
+     * @param string $codeClient
+     * @return $this
+     */
     public function setCodeClient(string $codeClient): static
     {
         $this->codeClient = $codeClient;
@@ -150,11 +168,18 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNomClient(): ?string
     {
         return $this->nomClient;
     }
 
+    /**
+     * @param string $nomClient
+     * @return $this
+     */
     public function setNomClient(string $nomClient): static
     {
         $this->nomClient = $nomClient;
@@ -162,11 +187,18 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getAdrClient(): ?string
     {
         return $this->adrClient;
     }
 
+    /**
+     * @param string|null $adrClient
+     * @return $this
+     */
     public function setAdrClient(?string $adrClient): static
     {
         $this->adrClient = $adrClient;
@@ -182,6 +214,28 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->reservations;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getTelClient(): ?string
+    {
+        return $this->telClient;
+    }
+
+    /**
+     * @param string|null $telClient
+     * @return $this
+     */
+    public function setTelClient(?string $telClient): static
+    {
+        $this->telClient = $telClient;
+
+        return $this;
+    }
+
+    /**
+     * Safely adds a reservation to the collection while maintaining the bidirectional relationship.
+     */
     public function addReservation(Reservation $reservation): static
     {
         if (!$this->reservations->contains($reservation)) {
@@ -192,6 +246,9 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * Safely removes a reservation and nullifies the owning side to prevent database inconsistencies.
+     */
     public function removeReservation(Reservation $reservation): static
     {
         if ($this->reservations->removeElement($reservation)) {
@@ -200,18 +257,6 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
                 $reservation->setClient(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getTelClient(): ?string
-    {
-        return $this->telClient;
-    }
-
-    public function setTelClient(?string $telClient): static
-    {
-        $this->telClient = $telClient;
 
         return $this;
     }

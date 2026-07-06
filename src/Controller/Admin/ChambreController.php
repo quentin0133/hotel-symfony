@@ -11,9 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Manages room entities and configuration settings within the back-office ecosystem.
+ */
 #[Route('/admin/chambre', name: 'admin.chambre.')]
 final class ChambreController extends AbstractController
 {
+    /**
+     * Displays a list of paginated rooms.
+     */
     #[Route(name: 'index', methods: ['GET'])]
     public function index(
         Request            $request,
@@ -30,6 +36,9 @@ final class ChambreController extends AbstractController
         ]);
     }
 
+    /**
+     * Creates a new room
+     */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -50,6 +59,9 @@ final class ChambreController extends AbstractController
         ]);
     }
 
+    /**
+     * Displays a specific room.
+     */
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Chambre $chambre): Response
     {
@@ -58,6 +70,9 @@ final class ChambreController extends AbstractController
         ]);
     }
 
+    /**
+     * Edits a room.
+     */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Chambre $chambre, EntityManagerInterface $entityManager): Response
     {
@@ -76,6 +91,9 @@ final class ChambreController extends AbstractController
         ]);
     }
 
+    /**
+     * Delete a room.
+     */
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Chambre $chambre, EntityManagerInterface $entityManager): Response
     {

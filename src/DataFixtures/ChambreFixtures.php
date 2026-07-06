@@ -10,8 +10,16 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
+/**
+ * Generates sample data for the Chambre entity.
+ * Implements dependency management to ensure valid relational mapping during seeding.
+ */
 class ChambreFixtures extends Fixture implements DependentFixtureInterface
 {
+    /**
+     * Loads the room fixtures into the database.
+     * @param ObjectManager $manager The Doctrine object manager responsible for persistence
+     */
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
@@ -37,6 +45,10 @@ class ChambreFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
+    /**
+     * Loads the room fixtures into the database.
+     * @param ObjectManager $manager The Doctrine object manager responsible for persistence
+     */
     public function getDependencies(): array
     {
         return [

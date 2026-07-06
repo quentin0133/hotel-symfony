@@ -12,9 +12,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Manages client entities and configuration settings within the back-office ecosystem.
+ */
 #[Route('/admin/client', name: 'admin.client.')]
 final class ClientController extends AbstractController
 {
+    /**
+     * Displays a list of paginated clients.
+     */
     #[Route(name: 'index', methods: ['GET'])]
     public function index(
         Request $request,
@@ -31,6 +37,9 @@ final class ClientController extends AbstractController
         ]);
     }
 
+    /**
+     * Creates a new client
+     */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
@@ -65,6 +74,9 @@ final class ClientController extends AbstractController
         ]);
     }
 
+    /**
+     * Displays a specific client.
+     */
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Client $client): Response
     {
@@ -73,6 +85,9 @@ final class ClientController extends AbstractController
         ]);
     }
 
+    /**
+     * Edits a client.
+     */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request, Client $client,
@@ -105,6 +120,9 @@ final class ClientController extends AbstractController
         ]);
     }
 
+    /**
+     * Delete a client
+     */
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
     {

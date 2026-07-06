@@ -9,6 +9,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * The core transactional entity of the application.
+ * Acts as the central junction binding Clients, Hotels, and Rooms within a specific timeframe.
+ */
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
 {
@@ -46,21 +50,34 @@ class Reservation
     #[ORM\Column(length: 255)]
     private ?string $numReservation = null;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->chambres = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return \DateTime|null
+     */
     public function getDateDebut(): ?\DateTime
     {
         return $this->dateDebut;
     }
 
+    /**
+     * @param \DateTime|null $dateDebut
+     * @return $this
+     */
     public function setDateDebut(?\DateTime $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
@@ -68,11 +85,18 @@ class Reservation
         return $this;
     }
 
+    /**
+     * @return \DateTime|null
+     */
     public function getDateFin(): ?\DateTime
     {
         return $this->dateFin;
     }
 
+    /**
+     * @param \DateTime|null $dateFin
+     * @return $this
+     */
     public function setDateFin(?\DateTime $dateFin): static
     {
         $this->dateFin = $dateFin;
@@ -80,11 +104,18 @@ class Reservation
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCommentaire(): ?string
     {
         return $this->commentaire;
     }
 
+    /**
+     * @param string|null $commentaire
+     * @return $this
+     */
     public function setCommentaire(?string $commentaire): static
     {
         $this->commentaire = $commentaire;
@@ -92,11 +123,18 @@ class Reservation
         return $this;
     }
 
+    /**
+     * @return Client|null
+     */
     public function getClient(): ?Client
     {
         return $this->client;
     }
 
+    /**
+     * @param Client|null $client
+     * @return $this
+     */
     public function setClient(?Client $client): static
     {
         $this->client = $client;
@@ -104,11 +142,18 @@ class Reservation
         return $this;
     }
 
+    /**
+     * @return Hotel|null
+     */
     public function getHotel(): ?Hotel
     {
         return $this->hotel;
     }
 
+    /**
+     * @param Hotel|null $hotel
+     * @return $this
+     */
     public function setHotel(?Hotel $hotel): static
     {
         $this->hotel = $hotel;
@@ -124,6 +169,10 @@ class Reservation
         return $this->chambres;
     }
 
+    /**
+     * Add a room from the collection
+     * @param Chambre $chambre room added
+     */
     public function addChambre(Chambre $chambre): static
     {
         if (!$this->chambres->contains($chambre)) {
@@ -133,6 +182,10 @@ class Reservation
         return $this;
     }
 
+    /**
+     * Remove a room from the collection
+     * @param Chambre $chambre room removed
+     */
     public function removeChambre(Chambre $chambre): static
     {
         $this->chambres->removeElement($chambre);
@@ -140,11 +193,18 @@ class Reservation
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNumReservation(): ?string
     {
         return $this->numReservation;
     }
 
+    /**
+     * @param string $numReservation
+     * @return $this
+     */
     public function setNumReservation(string $numReservation): static
     {
         $this->numReservation = $numReservation;

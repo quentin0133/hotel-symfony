@@ -8,6 +8,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Represents an hotel which will have room that can be reserved by customers
+ */
 #[ORM\Entity(repositoryClass: HotelRepository::class)]
 class Hotel
 {
@@ -46,22 +49,35 @@ class Hotel
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'hotel', cascade: ['remove'], orphanRemoval: true)]
     private Collection $reservations;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->chambres = new ArrayCollection();
         $this->reservations = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCodeHotel(): ?string
     {
         return $this->codeHotel;
     }
 
+    /**
+     * @param string $codeHotel
+     * @return $this
+     */
     public function setCodeHotel(string $codeHotel): static
     {
         $this->codeHotel = $codeHotel;
@@ -69,11 +85,18 @@ class Hotel
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNomHotel(): ?string
     {
         return $this->nomHotel;
     }
 
+    /**
+     * @param string $nomHotel
+     * @return $this
+     */
     public function setNomHotel(string $nomHotel): static
     {
         $this->nomHotel = $nomHotel;
@@ -81,11 +104,18 @@ class Hotel
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getAdresseHotel(): ?string
     {
         return $this->adresseHotel;
     }
 
+    /**
+     * @param string $adresseHotel
+     * @return $this
+     */
     public function setAdresseHotel(string $adresseHotel): static
     {
         $this->adresseHotel = $adresseHotel;
@@ -93,11 +123,18 @@ class Hotel
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCategorieHotel(): ?string
     {
         return $this->categorieHotel;
     }
 
+    /**
+     * @param string|null $categorieHotel
+     * @return $this
+     */
     public function setCategorieHotel(?string $categorieHotel): static
     {
         $this->categorieHotel = $categorieHotel;
@@ -113,6 +150,10 @@ class Hotel
         return $this->chambres;
     }
 
+    /**
+     * Add a room to the collection
+     * @param Chambre $chambre room added
+     */
     public function addChambre(Chambre $chambre): static
     {
         if (!$this->chambres->contains($chambre)) {
@@ -123,6 +164,10 @@ class Hotel
         return $this;
     }
 
+    /**
+     * Remove a room from the collection
+     * @param Chambre $chambre room removed
+     */
     public function removeChambre(Chambre $chambre): static
     {
         if ($this->chambres->removeElement($chambre)) {
@@ -143,6 +188,10 @@ class Hotel
         return $this->reservations;
     }
 
+    /**
+     * Add a reservation from the collection
+     * @param Reservation $reservation reservation added
+     */
     public function addReservation(Reservation $reservation): static
     {
         if (!$this->reservations->contains($reservation)) {
@@ -153,6 +202,10 @@ class Hotel
         return $this;
     }
 
+    /**
+     * Remove a reservation from the collection
+     * @param Reservation $reservation reservation removed
+     */
     public function removeReservation(Reservation $reservation): static
     {
         if ($this->reservations->removeElement($reservation)) {

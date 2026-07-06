@@ -7,8 +7,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * Handles security-related actions such as user authentication (login) and session termination (logout).
+ */
 class SecurityController extends AbstractController
 {
+    /**
+     * Renders the login form and processes authentication errors.
+     * @param AuthenticationUtils $authenticationUtils Symfony utility helper to retrieve security metadata
+     * @return Response The rendered HTML login page view
+     */
     #[Route(path: '/login', name: 'security.login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -24,6 +32,10 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    /**
+     * Entry point for the logout route.
+     * @throws \LogicException If the firewall configuration fails to intercept the request
+     */
     #[Route(path: '/logout', name: 'security.logout')]
     public function logout(): void
     {

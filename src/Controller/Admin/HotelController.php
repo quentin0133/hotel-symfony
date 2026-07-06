@@ -12,9 +12,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Manages hotel entities and configuration settings within the back-office ecosystem.
+ */
 #[Route('/admin/hotel', name: 'admin.hotel.')]
 final class HotelController extends AbstractController
 {
+    /**
+     * Displays a list of paginated hotels.
+     */
     #[Route(name: 'index', methods: ['GET'])]
     public function index(
         Request            $request,
@@ -32,6 +38,9 @@ final class HotelController extends AbstractController
         ]);
     }
 
+    /**
+     * Creates a new hotel
+     */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -52,6 +61,9 @@ final class HotelController extends AbstractController
         ]);
     }
 
+    /**
+     * Displays a specific hotel.
+     */
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Hotel $hotel): Response
     {
@@ -60,6 +72,9 @@ final class HotelController extends AbstractController
         ]);
     }
 
+    /**
+     * Edits an hotel.
+     */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Hotel $hotel, EntityManagerInterface $entityManager): Response
     {
@@ -78,6 +93,9 @@ final class HotelController extends AbstractController
         ]);
     }
 
+    /**
+     * Delete an hotel
+     */
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Hotel $hotel, EntityManagerInterface $entityManager): Response
     {

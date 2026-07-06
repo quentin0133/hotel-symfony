@@ -7,6 +7,10 @@ use App\Repository\ChambreRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Represents a hotel room within the domain.
+ * Centralizes data persistence mapping and business validation constraints.
+ */
 #[ORM\Entity(repositoryClass: ChambreRepository::class)]
 class Chambre
 {
@@ -36,16 +40,26 @@ class Chambre
     #[ORM\Column(nullable: true, enumType: ChambreTypeEnum::class)]
     private ?ChambreTypeEnum $type = null;
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCodeChambre(): ?string
     {
         return $this->codeChambre;
     }
 
+    /**
+     * @param string $codeChambre
+     * @return $this
+     */
     public function setCodeChambre(string $codeChambre): static
     {
         $this->codeChambre = $codeChambre;
@@ -53,11 +67,18 @@ class Chambre
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getEtage(): ?int
     {
         return $this->etage;
     }
 
+    /**
+     * @param int|null $etage
+     * @return $this
+     */
     public function setEtage(?int $etage): static
     {
         $this->etage = $etage;
@@ -65,11 +86,18 @@ class Chambre
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getNombreLit(): ?int
     {
         return $this->nombreLit;
     }
 
+    /**
+     * @param int $nombreLit
+     * @return $this
+     */
     public function setNombreLit(int $nombreLit): static
     {
         $this->nombreLit = $nombreLit;
@@ -77,11 +105,18 @@ class Chambre
         return $this;
     }
 
+    /**
+     * @return Hotel|null
+     */
     public function getHotel(): ?Hotel
     {
         return $this->hotel;
     }
 
+    /**
+     * @param Hotel|null $hotel
+     * @return $this
+     */
     public function setHotel(?Hotel $hotel): static
     {
         $this->hotel = $hotel;
@@ -89,11 +124,18 @@ class Chambre
         return $this;
     }
 
+    /**
+     * @return ChambreTypeEnum|null
+     */
     public function getType(): ?ChambreTypeEnum
     {
         return $this->type;
     }
 
+    /**
+     * @param ChambreTypeEnum|null $type
+     * @return $this
+     */
     public function setType(?ChambreTypeEnum $type): static
     {
         $this->type = $type;

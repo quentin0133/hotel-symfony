@@ -8,8 +8,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Handles the application home page and coordinates the availability search engine.
+ */
 final class HomeController extends AbstractController
 {
+    /**
+     * Renders the home page and filters available rooms based on a date range.
+     * @param Request           $request           The incoming HTTP request containing query parameters
+     * @param ChambreRepository $chambreRepository The repository handling custom room availability queries
+     * @return Response The rendered HTML home page view
+     */
     #[Route('/', name: 'home.index')]
     public function index(Request $request, ChambreRepository $chambreRepository): Response
     {

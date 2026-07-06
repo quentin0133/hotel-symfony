@@ -1,6 +1,9 @@
 <?php
 namespace App\Enum;
 
+/**
+ * Room types
+ */
 enum ChambreTypeEnum: string
 {
     case SIMPLE = 'Simple';

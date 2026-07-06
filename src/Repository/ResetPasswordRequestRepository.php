@@ -26,7 +26,6 @@ class ResetPasswordRequestRepository extends ServiceEntityRepository implements 
 
     /**
      * Factory method required by the ResetPasswordBundle to instantiate a new reset request.
-     * Note: The bundle uses a split-token mechanism (selector + hashed token) to prevent timing attacks.
      * @param object             $user        The user requesting the reset (expected to be a Client instance)
      * @param \DateTimeInterface $expiresAt   The precise date and time when the reset token will expire
      * @param string             $selector    A non-secret unique string used to quickly fetch the request from the DB

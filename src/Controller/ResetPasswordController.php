@@ -20,11 +20,17 @@ use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
+/**
+ * Orchestrates the secure password reset workflow using a split-token mechanism.
+ */
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
 {
     use ResetPasswordControllerTrait;
 
+    /**
+     * Displays and processes the initial password reset request form.
+     */
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
         private EntityManagerInterface $entityManager,
@@ -32,7 +38,7 @@ class ResetPasswordController extends AbstractController
     }
 
     /**
-     * Display & process form to request a password reset.
+     * Displays and processes the initial password reset request form.
      */
     #[Route('', name: 'app_forgot_password_request')]
     public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
@@ -54,7 +60,7 @@ class ResetPasswordController extends AbstractController
     }
 
     /**
-     * Confirmation page after a user has requested a password reset.
+     * Confirmation landing page. Uses fake tokens to mitigate user enumeration vectors.
      */
     #[Route('/check-email', name: 'app_check_email')]
     public function checkEmail(): Response
@@ -71,7 +77,7 @@ class ResetPasswordController extends AbstractController
     }
 
     /**
-     * Validates and process the reset URL that the user clicked in their email.
+     * Validates the token embedded in the URL and allows the user to define a new password.
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
     public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ?string $token = null): Response
@@ -129,6 +135,9 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
+    /**
+     * Internal utility method evaluating the user existence and executing email transport.
+     */
     private function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer, TranslatorInterface $translator): RedirectResponse
     {
         $user = $this->entityManager->getRepository(Client::class)->findOneBy([

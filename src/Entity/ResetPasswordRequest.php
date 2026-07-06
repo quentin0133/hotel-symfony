@@ -7,6 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestTrait;
 
+/**
+ * Represents a temporary, secure password reset request in the database.
+ * Integrates tightly with the SymfonyCasts ResetPassword bundle.
+ */
 #[ORM\Entity(repositoryClass: ResetPasswordRequestRepository::class)]
 class ResetPasswordRequest implements ResetPasswordRequestInterface
 {
@@ -21,17 +25,26 @@ class ResetPasswordRequest implements ResetPasswordRequestInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $user = null;
 
+    /**
+     * Instantiates a secure reset request using the bundle's split-token architecture.
+     */
     public function __construct(Client $user, \DateTimeInterface $expiresAt, string $selector, string $hashedToken)
     {
         $this->user = $user;
         $this->initialize($expiresAt, $selector, $hashedToken);
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return Client
+     */
     public function getUser(): Client
     {
         return $this->user;
