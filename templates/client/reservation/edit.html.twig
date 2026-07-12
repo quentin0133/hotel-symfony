@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Edit Reservation</h1>
 
-    {{ include('client/reservation/_form.html.twig', {'button_label': 'Modifier'}) }}
+    {{ component('client_reservation_form', {button_save: 'Modifier', initialFormData: reservation}) }}
 
     <a class="btn btn-secondary mt-2" href="{{ path('client.reservation.index') }}">Retourner à la liste</a>
 {% endblock %}

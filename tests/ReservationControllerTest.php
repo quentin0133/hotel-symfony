@@ -43,7 +43,6 @@ class ReservationControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $reservationRepository = $client->getContainer()->get(ReservationRepository::class);
-        $chambreRepository = $client->getContainer()->get(ChambreRepository::class);
         $hotelRepository = $client->getContainer()->get(HotelRepository::class);
         $clientHotelRepository = $client->getContainer()->get(ClientRepository::class);
 
@@ -52,11 +51,12 @@ class ReservationControllerTest extends WebTestCase
         $client->loginUser($adminUser);
 
         $hotel = $hotelRepository->findOneBy([]);
-        $chambres = array_slice($chambreRepository->findAll(), 0, 5);
-        $client->request('GET', '/admin/reservation/new');
+        $crawler = $client->request('GET', '/admin/reservation/new');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Ajouter un Réservation');
+
+        $csrfToken = $crawler->filter('input[name="admin_reservation[_token]"]')->attr('value');
 
         $newReservation = new Reservation()
             ->setNumReservation('4U74I365qT4Bd5')
@@ -67,18 +67,21 @@ class ReservationControllerTest extends WebTestCase
             ->setHotel($hotel)
         ;
 
-        for ($i = 0; $i < count($chambres); $i++) {
-            $newReservation->addChambre($chambres[$i]);
+        for ($i = 0; $i < count($hotel->getChambres()); $i++) {
+            $newReservation->addChambre($hotel->getChambres()[$i]);
         }
 
-        $client->submitForm('Enregistrer', [
-            'admin_reservation[numReservation]' => $newReservation->getNumReservation(),
-            'admin_reservation[dateDebut]' => $newReservation->getDateDebut()->format('Y-m-d'),
-            'admin_reservation[dateFin]' => $newReservation->getDateFin()->format('Y-m-d'),
-            'admin_reservation[commentaire]' => $newReservation->getCommentaire(),
-            'admin_reservation[client]' => $newReservation->getClient()->getId(),
-            'admin_reservation[hotel]' => $newReservation->getHotel()->getId(),
-            'admin_reservation[chambres]' => $newReservation->getChambres()->map(fn($c) => $c->getId())->toArray(),
+        $client->request('POST', '/admin/reservation/new', [
+            'admin_reservation' => [
+                'numReservation' => $newReservation->getNumReservation(),
+                'dateDebut' => $newReservation->getDateDebut()->format('Y-m-d'),
+                'dateFin' => $newReservation->getDateFin()->format('Y-m-d'),
+                'commentaire' => $newReservation->getCommentaire(),
+                'client' => $newReservation->getClient()->getId(),
+                'hotel' => $newReservation->getHotel()->getId(),
+                'chambres' => $newReservation->getChambres()->map(fn($c) => $c->getId())->toArray(),
+                '_token' => $csrfToken
+            ]
         ]);
 
         $this->assertResponseRedirects('/admin/reservation');
@@ -147,9 +150,8 @@ class ReservationControllerTest extends WebTestCase
         $adminUser = $clientHotelRepository->findOneByRole('ROLE_ADMIN');
         $client->loginUser($adminUser);
 
-        $hotel = $hotelRepository->findOneBy([]);
         $reservation = $reservationRepository->findOneBy([]);
-        $chambres = array_slice($chambreRepository->findAll(), 0, 3);
+        $hotel = $reservation->getHotel();
 
         assertNotNull($reservation, 'No reservation found, the table is empty');
 
@@ -169,8 +171,8 @@ class ReservationControllerTest extends WebTestCase
             ->setHotel($hotel)
         ;
 
-        for ($i = 0; $i < count($chambres); $i++) {
-            $editedReservation->addChambre($chambres[$i]);
+        for ($i = 0; $i < count($hotel->getChambres()); $i++) {
+            $editedReservation->addChambre($hotel->getChambres()[$i]);
         }
 
         $client->submitForm('Modifier', [

@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Ajouter un Réservation</h1>
 
-    {{ include('admin/reservation/_form.html.twig') }}
+    {{ component('admin_reservation_form') }}
 
     <a class="btn btn-secondary mt-2" href="{{ path('admin.reservation.index') }}">Retourner à la liste</a>
 {% endblock %}

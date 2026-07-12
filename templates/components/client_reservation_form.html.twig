@@ -1,0 +1,24 @@
+<div {{ attributes }}>
+    {{ form_start(form) }}
+    {{ form_row(form.numReservation) }}
+    {{ form_row(form.dateDebut) }}
+    {{ form_row(form.dateFin) }}
+
+    {{ form_row(form.hotel, {
+        attr: {
+            'data-action': 'live#$render',
+            'data-live-action-param': '$render',
+            'autocomplete': 'off'
+        }
+    }) }}
+
+    {% if form.hotel.vars.value is not empty %}
+        {{ form_row(form.chambres) }}
+    {% endif %}
+
+    {{ form_row(form.commentaire) }}
+
+    {{ form_end(form) }}
+
+    <button class="btn btn-primary" type="submit">{{ button_save|default('Enregistrer') }}</button>
+</div>
