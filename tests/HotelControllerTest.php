@@ -58,14 +58,12 @@ class HotelControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Ajouter un Hôtel');
 
         $newHotel = new Hotel()
-            ->setCodeHotel('1234')
             ->setNomHotel('Superb hotel')
             ->setAdresseHotel('8 street of Beauty')
             ->setCategorieHotel('House')
         ;
 
         $client->submitForm('Enregistrer', [
-            'hotel[codeHotel]' => $newHotel->getCodeHotel(),
             'hotel[nomHotel]' => $newHotel->getNomHotel(),
             'hotel[adresseHotel]' => $newHotel->getAdresseHotel(),
             'hotel[categorieHotel]' => $newHotel->getCategorieHotel(),
@@ -75,7 +73,6 @@ class HotelControllerTest extends WebTestCase
 
         $hotelDb = $hotelRepository->findOneBy([], ['id' => 'DESC']);;
         $this->assertNotNull($hotelDb, 'The hotel has not been created.');
-        $this->assertEquals($newHotel->getCodeHotel(), $hotelDb->getCodeHotel());
         $this->assertEquals($newHotel->getNomHotel(), $hotelDb->getNomHotel());
         $this->assertEquals($newHotel->getAdresseHotel(), $hotelDb->getAdresseHotel());
         $this->assertEquals($newHotel->getCategorieHotel(), $hotelDb->getCategorieHotel());
@@ -134,14 +131,12 @@ class HotelControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Modifier un Hôtel');
 
         $editedHotel = new Hotel()
-            ->setCodeHotel('1234')
             ->setNomHotel('Superb hotel')
             ->setAdresseHotel('8 street of Beauty')
             ->setCategorieHotel('House')
         ;
 
         $client->submitForm('Modifier', [
-            'hotel[codeHotel]' => $editedHotel->getCodeHotel(),
             'hotel[nomHotel]' => $editedHotel->getNomHotel(),
             'hotel[adresseHotel]' => $editedHotel->getAdresseHotel(),
             'hotel[categorieHotel]' => $editedHotel->getCategorieHotel(),
@@ -151,7 +146,6 @@ class HotelControllerTest extends WebTestCase
 
         $hotelDb = $hotelRepository->findOneBy(['id' => $hotel->getId()]);
         $this->assertNotNull($hotelDb, 'The hotel has not been modified.');
-        $this->assertEquals($editedHotel->getCodeHotel(), $hotelDb->getCodeHotel());
         $this->assertEquals($editedHotel->getNomHotel(), $hotelDb->getNomHotel());
         $this->assertEquals($editedHotel->getAdresseHotel(), $hotelDb->getAdresseHotel());
         $this->assertEquals($editedHotel->getCategorieHotel(), $hotelDb->getCategorieHotel());

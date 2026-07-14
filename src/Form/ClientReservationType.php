@@ -7,6 +7,7 @@ use App\Entity\Hotel;
 use App\Entity\Reservation;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\PreSubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,6 +15,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * Defines the form structure for client-facing reservation creation.
@@ -22,6 +25,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ClientReservationType extends AbstractType
 {
     /**
+     * @param SluggerInterface $slugger
+     */
+    public function __construct(private SluggerInterface $slugger)
+    {
+    }
+
+
+    /**
      * Builds the form fields mapped to the Reservation entity properties.
      * @param FormBuilderInterface $builder The form builder used to construct the form
      * @param array<string, mixed> $options Custom options passed to the form instance
@@ -29,7 +40,6 @@ class ClientReservationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('numReservation', TextType::class)
             ->add('dateDebut', DateType::class)
             ->add('dateFin', DateType::class)
             ->add('commentaire', TextType::class, [
@@ -56,6 +66,14 @@ class ClientReservationType extends AbstractType
                 ]);
             }
         };
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            $reservation = $event->getData();
+
+            if (!$reservation->getNumReservation()) {
+                $reservation->setNumReservation(strtolower((string) new Ulid()));
+            }
+        });
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,

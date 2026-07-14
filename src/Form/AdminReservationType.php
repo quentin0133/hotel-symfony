@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * Defines the form structure for creating and editing reservations in the administration panel.
@@ -29,7 +30,6 @@ class AdminReservationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('numReservation', TextType::class)
             ->add('dateDebut', DateType::class)
             ->add('dateFin', DateType::class)
             ->add('commentaire', TextType::class, [
@@ -60,6 +60,14 @@ class AdminReservationType extends AbstractType
                 ]);
             }
         };
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            $reservation = $event->getData();
+
+            if (!$reservation->getNumReservation()) {
+                $reservation->setNumReservation(strtolower((string) new Ulid()));
+            }
+        });
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,

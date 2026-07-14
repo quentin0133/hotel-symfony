@@ -62,7 +62,6 @@ class ChambreControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Ajouter une Chambre');
 
         $newChambre = new Chambre()
-            ->setCodeChambre('1234')
             ->setEtage(5)
             ->setNombreLit(2)
             ->setType(ChambreTypeEnum::PRESIDENTIAL_SUITE)
@@ -70,7 +69,6 @@ class ChambreControllerTest extends WebTestCase
         ;
 
         $client->submitForm('Enregistrer', [
-            'chambre[codeChambre]' => $newChambre->getCodeChambre(),
             'chambre[etage]' => $newChambre->getEtage(),
             'chambre[nombreLit]' => $newChambre->getNombreLit(),
             'chambre[type]' => $newChambre->getType()->value,
@@ -81,7 +79,6 @@ class ChambreControllerTest extends WebTestCase
 
         $chambreDb = $chambreRepository->findOneBy([], ['id' => 'DESC']);;
         $this->assertNotNull($chambreDb, 'The chambre has not been created.');
-        $this->assertEquals($newChambre->getCodeChambre(), $chambreDb->getCodeChambre());
         $this->assertEquals($newChambre->getEtage(), $chambreDb->getEtage());
         $this->assertEquals($newChambre->getNombreLit(), $chambreDb->getNombreLit());
         $this->assertEquals($newChambre->getType(), $chambreDb->getType());
@@ -146,7 +143,6 @@ class ChambreControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Modifier une Chambre');
 
         $editedChambre = new Chambre()
-            ->setCodeChambre('1234')
             ->setEtage(5)
             ->setNombreLit(2)
             ->setType(ChambreTypeEnum::PRESIDENTIAL_SUITE)
@@ -154,7 +150,6 @@ class ChambreControllerTest extends WebTestCase
         ;
 
         $client->submitForm('Modifier', [
-            'chambre[codeChambre]' => $editedChambre->getCodeChambre(),
             'chambre[etage]' => $editedChambre->getEtage(),
             'chambre[nombreLit]' => $editedChambre->getNombreLit(),
             'chambre[type]' => $editedChambre->getType()->value,
@@ -165,7 +160,6 @@ class ChambreControllerTest extends WebTestCase
 
         $chambreDb = $chambreRepository->findOneBy(['id' => $id]);
         $this->assertNotNull($chambreDb, 'The chambre has not been modified.');
-        $this->assertEquals($editedChambre->getCodeChambre(), $chambreDb->getCodeChambre());
         $this->assertEquals($editedChambre->getEtage(), $chambreDb->getEtage());
         $this->assertEquals($editedChambre->getNombreLit(), $chambreDb->getNombreLit());
         $this->assertEquals($editedChambre->getType(), $chambreDb->getType());

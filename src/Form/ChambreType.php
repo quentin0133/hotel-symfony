@@ -11,7 +11,10 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * Defines the form structure for creating and editing room (Chambre) entities.
@@ -26,7 +29,6 @@ class ChambreType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('codeChambre', TextType::class)
             ->add('etage', IntegerType::class)
             ->add('nombreLit', IntegerType::class)
             ->add('type', EnumType::class, [
@@ -41,6 +43,14 @@ class ChambreType extends AbstractType
                 'choice_label' => 'nomHotel'
             ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            $chambre = $event->getData();
+
+            if (!$chambre->getCodeChambre()) {
+                $chambre->setCodeChambre(strtolower((string) new Ulid()));
+            }
+        });
     }
 
     /**

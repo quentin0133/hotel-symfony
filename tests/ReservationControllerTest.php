@@ -59,7 +59,6 @@ class ReservationControllerTest extends WebTestCase
         $csrfToken = $crawler->filter('input[name="admin_reservation[_token]"]')->attr('value');
 
         $newReservation = new Reservation()
-            ->setNumReservation('4U74I365qT4Bd5')
             ->setDateDebut(new \DateTime('2020-01-01'))
             ->setDateFin(new \DateTime('2020-01-02'))
             ->setCommentaire(null)
@@ -73,7 +72,6 @@ class ReservationControllerTest extends WebTestCase
 
         $client->request('POST', '/admin/reservation/new', [
             'admin_reservation' => [
-                'numReservation' => $newReservation->getNumReservation(),
                 'dateDebut' => $newReservation->getDateDebut()->format('Y-m-d'),
                 'dateFin' => $newReservation->getDateFin()->format('Y-m-d'),
                 'commentaire' => $newReservation->getCommentaire(),
@@ -89,7 +87,6 @@ class ReservationControllerTest extends WebTestCase
         $reservationDb = $reservationRepository->findOneBy([], ['id' => 'DESC']);
 
         $this->assertNotNull($reservationDb, 'The reservation has not been created.');
-        $this->assertEquals($newReservation->getNumReservation(), $reservationDb->getNumReservation());
         $this->assertEquals($newReservation->getDateDebut(), $reservationDb->getDateDebut());
         $this->assertEquals($newReservation->getDateFin(), $reservationDb->getDateFin());
         $this->assertEquals($newReservation->getCommentaire(), $reservationDb->getCommentaire());
@@ -163,7 +160,6 @@ class ReservationControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Modifier un Réservation');
 
         $editedReservation = new Reservation()
-            ->setNumReservation('4U74I365qT4Bd5')
             ->setDateDebut(new \DateTime('2020-01-01'))
             ->setDateFin(new \DateTime('2020-01-02'))
             ->setCommentaire(null)
@@ -176,7 +172,6 @@ class ReservationControllerTest extends WebTestCase
         }
 
         $client->submitForm('Modifier', [
-            'admin_reservation[numReservation]' => $editedReservation->getNumReservation(),
             'admin_reservation[dateDebut]' => $editedReservation->getDateDebut()->format('Y-m-d'),
             'admin_reservation[dateFin]' => $editedReservation->getDateFin()->format('Y-m-d'),
             'admin_reservation[commentaire]' => $editedReservation->getCommentaire(),
@@ -189,7 +184,6 @@ class ReservationControllerTest extends WebTestCase
 
         $reservationDb = $reservationRepository->findOneBy(['id' => $id]);
         $this->assertNotNull($reservationDb, 'The reservation has not been modified.');
-        $this->assertEquals($editedReservation->getNumReservation(), $reservationDb->getNumReservation());
         $this->assertEquals($editedReservation->getDateDebut()->format('Y-m-d'), $reservationDb->getDateDebut()->format('Y-m-d'));
         $this->assertEquals($editedReservation->getDateFin()->format('Y-m-d'), $reservationDb->getDateFin()->format('Y-m-d'));
         $this->assertEquals($editedReservation->getCommentaire(), $reservationDb->getCommentaire());

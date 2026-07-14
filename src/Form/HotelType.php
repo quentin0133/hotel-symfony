@@ -6,7 +6,10 @@ use App\Entity\Hotel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * Defines the form structure for managing Hotel entities.
@@ -22,11 +25,18 @@ class HotelType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('codeHotel', TextType::class)
             ->add('nomHotel', TextType::class)
             ->add('adresseHotel', TextType::class)
             ->add('categorieHotel', TextType::class)
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            $hotel = $event->getData();
+
+            if (!$hotel->getCodeHotel()) {
+                $hotel->setCodeHotel(strtolower((string) new Ulid()));
+            }
+        });
     }
 
     /**

@@ -1,6 +1,5 @@
 <div {{ attributes }}>
     {{ form_start(form) }}
-    {{ form_row(form.numReservation) }}
     {{ form_row(form.dateDebut) }}
     {{ form_row(form.dateFin) }}
 
@@ -18,7 +17,7 @@
 
     {{ form_row(form.commentaire) }}
 
-    {{ form_end(form) }}
-
     <button class="btn btn-primary" type="submit">{{ button_save|default('Enregistrer') }}</button>
+
+    {{ form_end(form) }}
 </div>
