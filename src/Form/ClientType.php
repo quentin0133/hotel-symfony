@@ -9,7 +9,10 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -49,15 +52,27 @@ class ClientType extends AbstractType
                 'mapped' => false,
                 'required' => !$isEdit
             ])
-            ->add('codeClient', TextType::class)
             ->add('nomClient', TextType::class, [
+                'label' => 'Nom',
                 'required' => false,
             ])
+            ->add('telClient', TextType::class, [
+                'label' => 'Téléphone',
+                'required' => !$isEdit
+            ])
             ->add('adrClient', TextType::class, [
-                'label' => 'Adresse client',
+                'label' => 'Adresse',
                 'required' => false,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            $client = $event->getData();
+
+            if (!$client->getCodeClient()) {
+                $client->setCodeClient(strtolower((string) new Ulid()));
+            }
+        });
     }
 
     /**
