@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class ErrorController extends AbstractController
 {
     #[Route('/{url}', name: 'app_catch_all', requirements: ['url' => '.*'], priority: -100)]
-    public function catchAll(Security $security): Response
+    public function catchAll(): Response
     {
         throw $this->createNotFoundException('Page introuvable');
     }
