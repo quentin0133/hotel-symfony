@@ -28,11 +28,13 @@ final class ReservationController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
         $search = $request->query->getString('search');
+        $alert = $request->query->getString('alert');
 
         $reservations = $reservationRepository->findByNumReservationLikePaginated($search, $page);
 
         return $this->render('admin/reservation/index.html.twig', [
             'reservations' => $reservations,
+            'alert' => $alert
         ]);
     }
 
@@ -49,6 +51,8 @@ final class ReservationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($reservation);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Ajout de la réservation avec succès !');
 
             return $this->redirectToRoute('admin.reservation.index', [], Response::HTTP_SEE_OTHER);
         }
@@ -82,6 +86,8 @@ final class ReservationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Modification de la réservation avec succès !');
+
             return $this->redirectToRoute('admin.reservation.index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -100,6 +106,8 @@ final class ReservationController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $reservation->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($reservation);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Suppression de la réservation avec succès !');
         }
 
         return $this->redirectToRoute('admin.reservation.index', [], Response::HTTP_SEE_OTHER);

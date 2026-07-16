@@ -3,6 +3,12 @@
 {% block title %}Gestion des Chambres{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <h1>Gestion des Chambres</h1>
 
     <a class="btn btn-primary my-2" href="{{ path('admin.chambre.new') }}">Ajouter une Chambre</a>

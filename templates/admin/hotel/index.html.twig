@@ -3,6 +3,12 @@
 {% block title %}Gestion des Hôtels{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <h1>Gestion des Hôtels</h1>
 
     <a class="btn btn-primary my-2" href="{{ path('admin.hotel.new') }}">Ajouter un hôtel</a>

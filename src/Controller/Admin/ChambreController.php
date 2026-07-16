@@ -28,11 +28,13 @@ final class ChambreController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
         $search = $request->query->getString('search');
+        $alert = $request->query->getString('alert');
 
         $chambres = $chambreRepository->findByCodeChambreLikePaginated($search, $page, 10);
 
         return $this->render('admin/chambre/index.html.twig', [
             'chambres' => $chambres,
+            'alert' => $alert
         ]);
     }
 
@@ -49,6 +51,8 @@ final class ChambreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($chambre);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Ajout de la chambre avec succès !');
 
             return $this->redirectToRoute('admin.chambre.index', [], Response::HTTP_SEE_OTHER);
         }
@@ -82,6 +86,8 @@ final class ChambreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Modification de la chambre avec succès !');
+
             return $this->redirectToRoute('admin.chambre.index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -100,6 +106,8 @@ final class ChambreController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $chambre->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($chambre);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Suppression de la chambre avec succès !');
         }
 
         return $this->redirectToRoute('admin.chambre.index', [], Response::HTTP_SEE_OTHER);

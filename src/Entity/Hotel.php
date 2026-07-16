@@ -156,6 +156,7 @@ class Hotel
      */
     public function addChambre(Chambre $chambre): static
     {
+        $this->removeChambre(new Chambre());
         if (!$this->chambres->contains($chambre)) {
             $this->chambres->add($chambre);
             $chambre->setHotel($this);
@@ -171,7 +172,6 @@ class Hotel
     public function removeChambre(Chambre $chambre): static
     {
         if ($this->chambres->removeElement($chambre)) {
-            // set the owning side to null (unless already changed)
             if ($chambre->getHotel() === $this) {
                 $chambre->setHotel(null);
             }

@@ -29,11 +29,13 @@ final class ClientController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
         $search = $request->query->getString('search');
+        $alert = $request->query->getString('alert');
 
         $clients = $clientRepository->findByNameOrEmailLikePaginated($search, $page);
 
         return $this->render('admin/client/index.html.twig', [
             'clients' => $clients,
+            'alert' => $alert
         ]);
     }
 
@@ -64,6 +66,8 @@ final class ClientController extends AbstractController
 
             $entityManager->persist($client);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Ajout du client avec succès !');
 
             return $this->redirectToRoute('admin.client.index', [], Response::HTTP_SEE_OTHER);
         }
@@ -111,6 +115,8 @@ final class ClientController extends AbstractController
 
             $entityManager->flush();
 
+            $this->addFlash('success', 'Modification du client avec succès !');
+
             return $this->redirectToRoute('admin.client.index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -129,6 +135,8 @@ final class ClientController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($client);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Suppression du client avec succès !');
         }
 
         return $this->redirectToRoute('admin.client.index', [], Response::HTTP_SEE_OTHER);

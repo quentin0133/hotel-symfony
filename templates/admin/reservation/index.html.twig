@@ -3,6 +3,12 @@
 {% block title %}Gestion des Réservations{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <h1>Gestion des Réservations</h1>
 
     <a class="btn btn-primary my-2" href="{{ path('admin.reservation.new') }}">Ajouter une réservation</a>

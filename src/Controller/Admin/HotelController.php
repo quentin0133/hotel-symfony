@@ -30,11 +30,13 @@ final class HotelController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
         $search = $request->query->getString('search');
+        $alert = $request->query->getString('alert');
 
         $hotels = $hotelRepository->findByCodeHotelLikePaginated($search, $page);
 
         return $this->render('admin/hotel/index.html.twig', [
             'hotels' => $hotels,
+            'alert' => $alert
         ]);
     }
 
@@ -51,6 +53,8 @@ final class HotelController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($hotel);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Ajout de l\'hôtel avec succès !');
 
             return $this->redirectToRoute('admin.hotel.index', [], Response::HTTP_SEE_OTHER);
         }
@@ -84,6 +88,8 @@ final class HotelController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Modification de l\'hôtel avec succès !');
+
             return $this->redirectToRoute('admin.hotel.index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -102,8 +108,10 @@ final class HotelController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$hotel->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($hotel);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Suppression de l\'hôtel avec succès !');
         }
 
-        return $this->redirectToRoute('admin.hotel.index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin.hotel.index', ['alert' => 'Suppression de la hôtel avec succès !'], Response::HTTP_SEE_OTHER);
     }
 }
